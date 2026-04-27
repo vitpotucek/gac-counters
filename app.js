@@ -1,3 +1,5 @@
+let filterEnemyOnly = false;
+
 let currentPage = 1;
 const ROWS_PER_PAGE = 10;
 
@@ -44,13 +46,22 @@ function render() {
     return { ...m, id: idx, winrate, tier: t };
   });
 
-  if (search) {
+if (search) {
+  if (filterEnemyOnly) {
+    // filtrujeme jen podle enemyLead
+    filtered = filtered.filter(m =>
+      m.enemyLead.toLowerCase().includes(search)
+    );
+  } else {
+    // původní chování
     filtered = filtered.filter(m =>
       m.enemyLead.toLowerCase().includes(search) ||
       m.myLead.toLowerCase().includes(search) ||
       (m.notes && m.notes.toLowerCase().includes(search))
     );
   }
+}
+
 
   if (tier) filtered = filtered.filter(m => m.tier === tier);
   if (type) filtered = filtered.filter(m => m.type === type);
@@ -102,6 +113,12 @@ function renderPagination(totalItems) {
 }
 
 function updateSummary(list) {
+  const fullList = matchups.map((m, idx) => {
+    const winrate = calcWinrate(m);
+    const t = calcTier(winrate, m.attempts);
+    return { ...m, id: idx, winrate, tier: t };
+  });
+
   // GL doporučení
 
   const glList = [
@@ -115,7 +132,7 @@ function updateSummary(list) {
   ];
 
   const glHTML = glList.map(gl => {
-    const counters = list.filter(m => m.enemyLead.includes(gl));
+    const counters = fullList.filter(m => m.enemyLead.includes(gl));
     if (counters.length === 0) return "";
 
     const best = counters.sort((a, b) => b.winrate - a.winrate)[0];
@@ -150,27 +167,32 @@ function showDetail(m) {
 
 
 function filterForGL(glName) {
-  // nastavíme textové vyhledávání
+  // zapneme režim "filtruj jen enemyLead"
+  filterEnemyOnly = true;
+
+  // nastavíme vyhledávání
   searchInput.value = glName;
 
-  // necháme všechny typy (ground/ship/cleanup)
+  // necháme všechny typy
   typeFilter.value = "";
 
-  // reset stránky
   currentPage = 1;
-
-  // přerenderujeme tabulku
   render();
 
-  // posuneme stránku k tabulce
   document.querySelector(".table-section").scrollIntoView({
     behavior: "smooth"
   });
 }
 
 
+
 // reset stránky při změně filtrů
-searchInput.addEventListener("input", () => { currentPage = 1; render(); });
+searchInput.addEventListener("input", () => { 
+  filterEnemyOnly = false; 
+  currentPage = 1; 
+  render(); 
+});
+
 tierFilter.addEventListener("change", () => { currentPage = 1; render(); });
 typeFilter.addEventListener("change", () => { currentPage = 1; render(); });
 
