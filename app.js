@@ -24,6 +24,7 @@ function calcTier(winrate, attempts) {
   return "C";
 }
 
+const autocompleteList = document.getElementById("autocompleteList");
 const tableBody = document.getElementById("matchupTableBody");
 const totalMatchupsEl = document.getElementById("totalMatchups");
 const avgWinrateEl = document.getElementById("avgWinrate");
@@ -196,17 +197,61 @@ function resetFilters() {
   render();
 }
 
+function updateAutocomplete() {
+  const text = searchInput.value.toLowerCase();
+  if (!text) {
+    autocompleteList.style.display = "none";
+    return;
+  }
+
+  // unikátní návrhy z enemyLead + myLead
+  const suggestions = [...new Set(
+    matchups
+      .flatMap(m => [m.enemyLead, m.myLead])
+      .filter(name => name.toLowerCase().includes(text))
+  )].slice(0, 10); // max 10 návrhů
+
+  if (suggestions.length === 0) {
+    autocompleteList.style.display = "none";
+    return;
+  }
+
+  autocompleteList.innerHTML = suggestions
+    .map(s => `<div class="autocomplete-item" data-value="${s}">${s}</div>`)
+    .join("");
+
+  autocompleteList.style.display = "block";
+}
+
+
 
 // reset stránky při změně filtrů
 searchInput.addEventListener("input", () => { 
   filterEnemyOnly = false; 
   currentPage = 1; 
+  updateAutocomplete();
   render(); 
+});
+autocompleteList.addEventListener("click", (e) => {
+  if (e.target.classList.contains("autocomplete-item")) {
+    const value = e.target.getAttribute("data-value");
+    searchInput.value = value;
+    filterEnemyOnly = false;
+    currentPage = 1;
+    render();
+    autocompleteList.style.display = "none";
+  }
 });
 
 tierFilter.addEventListener("change", () => { currentPage = 1; render(); });
 typeFilter.addEventListener("change", () => { currentPage = 1; render(); });
 document.getElementById("resetFilterBtn").addEventListener("click", resetFilters);
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".search-wrapper") && !e.target.closest("#autocompleteList")) {
+    autocompleteList.style.display = "none";
+  }
+});
+
 
 
 loadJSON();
