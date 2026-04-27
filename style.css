@@ -328,3 +328,33 @@ footer {
 .autocomplete-item:hover {
   background: #2a3147;
 }
+.collapsible-card {
+  overflow: hidden;
+}
+
+.collapsible-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.collapse-icon {
+  transition: transform 0.2s ease;
+}
+
+.collapsible-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+/* když je otevřeno */
+.collapsible-card.open .collapsible-content {
+  max-height: 1000px; /* dostatečně velké */
+}
+
+.collapsible-card.open .collapse-icon {
+  transform: rotate(90deg);
+}
