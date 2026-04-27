@@ -3,6 +3,8 @@ let filterEnemyOnly = false;
 let currentPage = 1;
 const ROWS_PER_PAGE = 10;
 
+
+
 let matchups = [];
 
 async function loadJSON() {
@@ -11,6 +13,19 @@ async function loadJSON() {
   currentPage = 1;
   render();
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const card = document.querySelector(".collapsible-card");
+  const header = document.querySelector(".collapsible-header");
+
+  // defaultně zavřené
+  card.classList.remove("open");
+
+  header.addEventListener("click", () => {
+    card.classList.toggle("open");
+  });
+});
+
 
 function calcWinrate(m) {
   if (!m.attempts) return 0;
