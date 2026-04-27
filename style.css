@@ -279,3 +279,29 @@ footer {
   opacity: 1;
 }
 
+.search-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.search-wrapper input {
+  padding-right: 30px; /* místo pro ikonku */
+  height: 32px;        /* sjednocení výšky */
+  line-height: 32px;
+}
+
+.reset-icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  user-select: none;
+}
+
+.reset-icon:hover {
+  opacity: 1;
+}
