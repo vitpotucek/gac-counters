@@ -48,13 +48,8 @@ function render() {
     );
   }
 
-  if (tier) {
-    filtered = filtered.filter(m => m.tier === tier);
-  }
-
-  if (type) {
-    filtered = filtered.filter(m => m.type === type);
-  }
+  if (tier) filtered = filtered.filter(m => m.tier === tier);
+  if (type) filtered = filtered.filter(m => m.type === type);
 
   tableBody.innerHTML = "";
 
@@ -86,9 +81,7 @@ function updateSummary(list) {
     return;
   }
 
-  const avg = Math.round(
-    list.reduce((sum, m) => sum + m.winrate, 0) / total
-  );
+  const avg = Math.round(list.reduce((sum, m) => sum + m.winrate, 0) / total);
   avgWinrateEl.textContent = `${avg}%`;
 
   const sCount = list.filter(m => m.tier === "S").length;
@@ -119,6 +112,7 @@ function updateSummary(list) {
 function showDetail(m) {
   const winrate = calcWinrate(m);
   const tier = calcTier(winrate, m.attempts);
+
   detailPanel.innerHTML = `
     <p><strong>Typ:</strong> ${m.type}</p>
     <p><strong>Enemy lead:</strong> ${m.enemyLead}</p>
@@ -132,51 +126,5 @@ function showDetail(m) {
 searchInput.addEventListener("input", render);
 tierFilter.addEventListener("change", render);
 typeFilter.addEventListener("change", render);
-
-// Přidání nového counteru
-const addForm = document.getElementById("addForm");
-const newType = document.getElementById("newType");
-const newEnemy = document.getElementById("newEnemy");
-const newMine = document.getElementById("newMine");
-const newAttempts = document.getElementById("newAttempts");
-const newWins = document.getElementById("newWins");
-const newNotes = document.getElementById("newNotes");
-const exportBtn = document.getElementById("exportBtn");
-
-addForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const attempts = parseInt(newAttempts.value, 10);
-  const wins = parseInt(newWins.value, 10);
-
-  matchups.push({
-    type: newType.value,
-    enemyLead: newEnemy.value.trim(),
-    myLead: newMine.value.trim(),
-    attempts: attempts,
-    wins: wins,
-    notes: newNotes.value.trim()
-  });
-
-  newEnemy.value = "";
-  newMine.value = "";
-  newAttempts.value = "1";
-  newWins.value = "1";
-  newNotes.value = "";
-
-  render();
-});
-
-// Export JSON – stáhne aktuální matchups jako data.json
-exportBtn.addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify(matchups, null, 2)], {
-    type: "application/json"
-  });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "data.json";
-  a.click();
-  URL.revokeObjectURL(url);
-});
 
 loadJSON();
