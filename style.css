@@ -163,3 +163,31 @@ footer {
   margin-top: 40px;
   color: #777;
 }
+
+.pagination {
+  margin-top: 15px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  padding: 6px 12px;
+  background: #1d2233;
+  border: 1px solid #272b3a;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #e0e3eb;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.page-btn:hover {
+  background: #2a3147;
+  transform: translateY(-2px);
+}
+
+.page-btn.active {
+  background: #3498db;
+  border-color: #3498db;
+  font-weight: bold;
+}
