@@ -191,3 +191,35 @@ footer {
   border-color: #3498db;
   font-weight: bold;
 }
+
+.recommend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.recommend-card {
+  background: #1d2233;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #2c3145;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recommend-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+}
+
+.recommend-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.recommend-sub {
+  font-size: 14px;
+  color: #bfc4d6;
+}
+
