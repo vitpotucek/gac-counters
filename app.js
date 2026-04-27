@@ -141,12 +141,12 @@ const newMine = document.getElementById("newMine");
 const newAttempts = document.getElementById("newAttempts");
 const newWins = document.getElementById("newWins");
 const newNotes = document.getElementById("newNotes");
+const exportBtn = document.getElementById("exportBtn");
 
 addForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const attempts = parseInt(newAttempts.value, 10);
   const wins = parseInt(newWins.value, 10);
-  
 
   matchups.push({
     type: newType.value,
@@ -164,9 +164,19 @@ addForm.addEventListener("submit", (e) => {
   newNotes.value = "";
 
   render();
+});
 
-  // zavrit modalni okno
-  addModal.style.display = "none";
+// Export JSON – stáhne aktuální matchups jako data.json
+exportBtn.addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(matchups, null, 2)], {
+    type: "application/json"
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "data.json";
+  a.click();
+  URL.revokeObjectURL(url);
 });
 
 loadJSON();
