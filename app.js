@@ -102,40 +102,17 @@ function renderPagination(totalItems) {
 }
 
 function updateSummary(list) {
-  const total = list.length;
-  totalMatchupsEl.textContent = total;
+  // GL doporučení
 
-  if (total === 0) {
-    avgWinrateEl.textContent = "0%";
-    sTierCountEl.textContent = "0";
-    document.getElementById("topCounters").innerHTML = "<p>Žádná data.</p>";
-    document.getElementById("glCounters").innerHTML = "<p>Žádná data.</p>";
-    return;
-  }
-
-  const avg = Math.round(list.reduce((sum, m) => sum + m.winrate, 0) / total);
-  avgWinrateEl.textContent = `${avg}%`;
-
-  const sCount = list.filter(m => m.tier === "S").length;
-  sTierCountEl.textContent = sCount.toString();
-
-  // TOP 5 COUNTERŮ
-  const top = [...list]
-    .sort((a, b) => b.winrate - a.winrate)
-    .slice(0, 5);
-
-  const topHTML = top.map(m => `
-    <div class="recommend-card">
-      <div class="recommend-title">${m.myLead} → ${m.enemyLead}</div>
-      <div class="recommend-sub">Winrate: ${m.winrate}% (${m.wins}/${m.attempts})</div>
-      <div class="recommend-sub">Tier: ${m.tier}</div>
-    </div>
-  `).join("");
-
-  document.getElementById("topCounters").innerHTML = topHTML;
-
-  // GL COUNTERS
-  const glList = ["Rey", "Supreme Leader Kylo Ren", "Jedi Master Luke Skywalker", "Jedi Master Kenobi", "Jabba", "Leia Organa", "Lord Vader"];
+  const glList = [
+    "Rey",
+    "Supreme Leader Kylo Ren",
+    "Jedi Master Luke Skywalker",
+    "Jedi Master Kenobi",
+    "Jabba",
+    "Leia Organa",
+    "Lord Vader"
+  ];
 
   const glHTML = glList.map(gl => {
     const counters = list.filter(m => m.enemyLead.includes(gl));
@@ -144,16 +121,17 @@ function updateSummary(list) {
     const best = counters.sort((a, b) => b.winrate - a.winrate)[0];
 
     return `
-      <div class="recommend-card">
-        <div class="recommend-title">${gl}</div>
-        <div class="recommend-sub">${best.myLead} → ${best.enemyLead}</div>
-        <div class="recommend-sub">Winrate: ${best.winrate}% (${best.wins}/${best.attempts})</div>
+      <div class="gl-tile" onclick="filterForGL('${gl}')">
+        <div class="gl-title">${gl}</div>
+        <div class="gl-sub">${best.myLead} → ${best.enemyLead}</div>
+        <div class="gl-sub">${best.winrate}% (${best.wins}/${best.attempts})</div>
       </div>
     `;
   }).join("");
 
   document.getElementById("glCounters").innerHTML = glHTML;
 }
+
 
 
 function showDetail(m) {
@@ -169,6 +147,27 @@ function showDetail(m) {
     <p><strong>Poznámky:</strong> ${m.notes || "—"}</p>
   `;
 }
+
+
+function filterForGL(glName) {
+  // nastavíme textové vyhledávání
+  searchInput.value = glName;
+
+  // necháme všechny typy (ground/ship/cleanup)
+  typeFilter.value = "";
+
+  // reset stránky
+  currentPage = 1;
+
+  // přerenderujeme tabulku
+  render();
+
+  // posuneme stránku k tabulce
+  document.querySelector(".table-section").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
 
 // reset stránky při změně filtrů
 searchInput.addEventListener("input", () => { currentPage = 1; render(); });
