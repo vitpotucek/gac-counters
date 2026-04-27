@@ -1,8 +1,12 @@
+let currentPage = 1;
+const ROWS_PER_PAGE = 10;
+
 let matchups = [];
 
 async function loadJSON() {
   const response = await fetch("data.json");
   matchups = await response.json();
+  currentPage = 1;
   render();
 }
 
@@ -51,9 +55,14 @@ function render() {
   if (tier) filtered = filtered.filter(m => m.tier === tier);
   if (type) filtered = filtered.filter(m => m.type === type);
 
+  // stránkování
+  const start = (currentPage - 1) * ROWS_PER_PAGE;
+  const end = start + ROWS_PER_PAGE;
+  const pageItems = filtered.slice(start, end);
+
   tableBody.innerHTML = "";
 
-  filtered.forEach(m => {
+  pageItems.forEach(m => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${m.type}</td>
@@ -68,6 +77,28 @@ function render() {
   });
 
   updateSummary(filtered);
+  renderPagination(filtered.length);
+}
+
+function renderPagination(totalItems) {
+  const pagination = document.getElementById("pagination");
+  pagination.innerHTML = "";
+
+  const totalPages = Math.ceil(totalItems / ROWS_PER_PAGE);
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.classList.add("page-btn");
+    if (i === currentPage) btn.classList.add("active");
+
+    btn.addEventListener("click", () => {
+      currentPage = i;
+      render();
+    });
+
+    pagination.appendChild(btn);
+  }
 }
 
 function updateSummary(list) {
@@ -123,8 +154,9 @@ function showDetail(m) {
   `;
 }
 
-searchInput.addEventListener("input", render);
-tierFilter.addEventListener("change", render);
-typeFilter.addEventListener("change", render);
+// reset stránky při změně filtrů
+searchInput.addEventListener("input", () => { currentPage = 1; render(); });
+tierFilter.addEventListener("change", () => { currentPage = 1; render(); });
+typeFilter.addEventListener("change", () => { currentPage = 1; render(); });
 
 loadJSON();
