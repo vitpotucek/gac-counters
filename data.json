@@ -1,0 +1,232 @@
+[
+  {
+    "type": "ground",
+    "enemyLead": "Ahsoka Tano",
+    "myLead": "Darth Bane",
+    "attempts": 1,
+    "wins": 0,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Ahsoka Tano",
+    "myLead": "Palpatine (SK)",
+    "attempts": 1,
+    "wins": 1,
+    "notes": "cron"
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Bo-Katan (Mandalore)",
+    "myLead": "Bossk",
+    "attempts": 1,
+    "wins": 0,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Boss Nass",
+    "myLead": "Greath Mothers",
+    "attempts": 9,
+    "wins": 9,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Brood Alpha",
+    "myLead": "Phoenix (Rex)",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Carth Onasi",
+    "myLead": "Mon Mothma",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Cere Junda",
+    "myLead": "Qui-Gon Jinn",
+    "attempts": 1,
+    "wins": 0,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Cere Junda",
+    "myLead": "Admiral Raddus",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Commander Luke Skywalker",
+    "myLead": "Darth Malgus",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Darth Malgus",
+    "myLead": "General Skywalker",
+    "attempts": 2,
+    "wins": 1,
+    "notes": "low R"
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Darth Malgus",
+    "myLead": "Jedi Master Luke Skywalker",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Darth Malgus",
+    "myLead": "Palpatine (SK)",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Darth Malgus",
+    "myLead": "Darth Bane",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Darth Revan",
+    "myLead": "Great Mothers",
+    "attempts": 1,
+    "wins": 0,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Darth Revan",
+    "myLead": "Commander Luke Skywalker",
+    "attempts": 1,
+    "wins": 0,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Darth Traya",
+    "myLead": "Bane",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Darth Traya",
+    "myLead": "Bo-Katan (Mandalore)",
+    "attempts": 1,
+    "wins": 0,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Darth Traya",
+    "myLead": "Palpatine (SK)",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Dash Rendar",
+    "myLead": "Bossk",
+    "attempts": 1,
+    "wins": 0,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Dash Rendar",
+    "myLead": "Admiral Raddus",
+    "attempts": 1,
+    "wins": 0,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Dash Rendar",
+    "myLead": "Commander Luke Skywalker",
+    "attempts": 1,
+    "wins": 0,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Dash Rendar",
+    "myLead": "Cere Junda",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "Finn",
+    "myLead": "Darth Malgus",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "General Grievous",
+    "myLead": "Wampa",
+    "attempts": 9,
+    "wins": 9,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "General Grievous",
+    "myLead": "Boss Nass",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "General Grievous",
+    "myLead": "Mon Mothma",
+    "attempts": 1,
+    "wins": 0,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "General Grievous",
+    "myLead": "Cere Junda",
+    "attempts": 9,
+    "wins": 9,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "General Skywalker",
+    "myLead": "Commander Luke Skywalker",
+    "attempts": 1,
+    "wins": 1,
+    "notes": ""
+  },
+  {
+    "type": "ground",
+    "enemyLead": "General Skywalker",
+    "myLead": "Cere Junda",
+    "attempts": 1,
+    "wins": 1,
+    "notes":

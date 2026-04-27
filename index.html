@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <title>GAC Counters – Vítova appka</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>GAC Counters – osobní databáze</h1>
+    <div class="controls">
+      <label>
+        Hledat:
+        <input type="text" id="searchInput" placeholder="Enemy, My lead, GL, frakce..." />
+      </label>
+      <label>
+        Tier:
+        <select id="tierFilter">
+          <option value="">Vše</option>
+          <option value="S">S</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </label>
+      <label>
+        Typ:
+        <select id="typeFilter">
+          <option value="">Vše</option>
+          <option value="ground">Ground</option>
+          <option value="ship">Ship</option>
+          <option value="cleanup">Cleanup</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="summary">
+      <div class="card">
+        <h2>Souhrn</h2>
+        <p><strong>Počet matchupů:</strong> <span id="totalMatchups">0</span></p>
+        <p><strong>Průměrná winrate:</strong> <span id="avgWinrate">0%</span></p>
+        <p><strong>S‑tier counterů:</strong> <span id="sTierCount">0</span></p>
+      </div>
+      <div class="card">
+        <h2>Doporučení</h2>
+        <ul id="recommendations"></ul>
+      </div>
+    </section>
+
+    <section class="table-section">
+      <h2>Matchupy</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Typ</th>
+            <th>Enemy lead</th>
+            <th>My lead</th>
+            <th>Winrate</th>
+            <th>Tier</th>
+            <th>Pokusy</th>
+          </tr>
+        </thead>
+        <tbody id="matchupTableBody">
+        </tbody>
+      </table>
+    </section>
+
+    <section class="detail-section">
+      <h2>Detail counteru</h2>
+      <div id="detailPanel">
+        <p>Vyber řádek v tabulce pro detail.</p>
+      </div>
+    </section>
+<section class="edit-section">
+  <h2>Přidat nový counter</h2>
+  <form id="addForm">
+    <label>
+      Typ:
+      <select id="newType">
+        <option value="ground">ground</option>
+        <option value="ship">ship</option>
+        <option value="cleanup">cleanup</option>
+      </select>
+    </label>
+    <label>
+      Enemy lead:
+      <input type="text" id="newEnemy" required />
+    </label>
+    <label>
+      My lead:
+      <input type="text" id="newMine" required />
+    </label>
+    <label>
+      Pokusy:
+      <input type="number" id="newAttempts" min="1" value="1" required />
+    </label>
+    <label>
+      Výhry:
+      <input type="number" id="newWins" min="0" value="1" required />
+    </label>
+    <label>
+      Poznámky:
+      <input type="text" id="newNotes" />
+    </label>
+    <button type="submit">Přidat</button>
+    <button type="button" id="exportBtn">Export JSON</button>
+  </form>
+</section>
+
+  </main>
+
+  <footer>
+    <small>Vítova GAC appka • data z osobního Excelu</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
