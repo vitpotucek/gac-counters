@@ -256,4 +256,26 @@ footer {
   color: #bfc4d6;
 }
 
+.search-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.search-wrapper input {
+  padding-right: 28px; /* místo pro ikonku */
+}
+
+.reset-icon {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.reset-icon:hover {
+  opacity: 1;
+}
 
