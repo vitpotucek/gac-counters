@@ -122,13 +122,16 @@ function updateSummary(list) {
   // GL doporučení
 
   const glList = [
+    "Ahsoka Tano",
     "Rey",
     "Supreme Leader Kylo Ren",
     "Jedi Master Luke Skywalker",
     "Jedi Master Kenobi",
     "Jabba",
     "Leia Organa",
-    "Lord Vader"
+    "Lord Vader",
+    "Pirate King Hondo Ohnaka",
+    "Sith Eternal Emperor"
   ];
 
   const glHTML = glList.map(gl => {
