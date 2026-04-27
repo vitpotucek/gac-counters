@@ -39,6 +39,17 @@ input, select {
   border: 1px solid #3a3f55;
   background: #0f111a;
   color: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:hover, select:hover {
+  border-color: #4a5270;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #6b78a8;
+  box-shadow: 0 0 4px rgba(107,120,168,0.5);
 }
 
 
@@ -63,6 +74,12 @@ main {
   border: 1px solid #272b3a;
   flex: 1;
   min-width: 250px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
 
 .table-section {
@@ -75,6 +92,7 @@ main {
   padding: 15px;
   border-radius: 8px;
   border: 1px solid #272b3a;
+  animation: fadeIn 0.25s ease;
 }
 
 
@@ -98,8 +116,13 @@ th {
   text-align: left;
 }
 
+tr {
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
 tr:hover {
-  background: #1f2538;
+  background: #242b40;
+  transform: translateX(4px);
   cursor: pointer;
 }
 
@@ -111,12 +134,25 @@ tr:hover {
   border-radius: 4px;
   font-weight: bold;
   color: #fff;
+  transition: transform 0.15s ease;
+}
+
+.badge:hover {
+  transform: scale(1.08);
 }
 
 .badge-S { background: #2ecc71; }
 .badge-A { background: #3498db; }
 .badge-B { background: #f1c40f; color: #000; }
 .badge-C { background: #e74c3c; }
+
+
+/* ====== ANIMACE ====== */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
 
 /* ====== FOOTER ====== */
