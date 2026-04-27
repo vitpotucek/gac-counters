@@ -108,7 +108,8 @@ function updateSummary(list) {
   if (total === 0) {
     avgWinrateEl.textContent = "0%";
     sTierCountEl.textContent = "0";
-    recommendationsEl.innerHTML = "<li>Žádná data pro aktuální filtr.</li>";
+    document.getElementById("topCounters").innerHTML = "<p>Žádná data.</p>";
+    document.getElementById("glCounters").innerHTML = "<p>Žádná data.</p>";
     return;
   }
 
@@ -118,27 +119,42 @@ function updateSummary(list) {
   const sCount = list.filter(m => m.tier === "S").length;
   sTierCountEl.textContent = sCount.toString();
 
-  const best = list.filter(m => m.tier === "S").slice(0, 5);
-  const risky = list.filter(m => m.tier === "C").slice(0, 5);
+  // TOP 5 COUNTERŮ
+  const top = [...list]
+    .sort((a, b) => b.winrate - a.winrate)
+    .slice(0, 5);
 
-  recommendationsEl.innerHTML = "";
+  const topHTML = top.map(m => `
+    <div class="recommend-card">
+      <div class="recommend-title">${m.myLead} → ${m.enemyLead}</div>
+      <div class="recommend-sub">Winrate: ${m.winrate}% (${m.wins}/${m.attempts})</div>
+      <div class="recommend-sub">Tier: ${m.tier}</div>
+    </div>
+  `).join("");
 
-  if (best.length > 0) {
-    const li = document.createElement("li");
-    li.textContent = `S‑tier: ${best
-      .map(m => `${m.myLead} → ${m.enemyLead} (${m.winrate}%)`)
-      .join(" | ")}`;
-    recommendationsEl.appendChild(li);
-  }
+  document.getElementById("topCounters").innerHTML = topHTML;
 
-  if (risky.length > 0) {
-    const li2 = document.createElement("li");
-    li2.textContent = `Rizikové: ${risky
-      .map(m => `${m.myLead} → ${m.enemyLead} (${m.winrate}%)`)
-      .join(" | ")}`;
-    recommendationsEl.appendChild(li2);
-  }
+  // GL COUNTERS
+  const glList = ["Rey", "Supreme Leader Kylo Ren", "Jedi Master Luke Skywalker", "Jedi Master Kenobi", "Jabba", "Leia Organa", "Lord Vader"];
+
+  const glHTML = glList.map(gl => {
+    const counters = list.filter(m => m.enemyLead.includes(gl));
+    if (counters.length === 0) return "";
+
+    const best = counters.sort((a, b) => b.winrate - a.winrate)[0];
+
+    return `
+      <div class="recommend-card">
+        <div class="recommend-title">${gl}</div>
+        <div class="recommend-sub">${best.myLead} → ${best.enemyLead}</div>
+        <div class="recommend-sub">Winrate: ${best.winrate}% (${best.wins}/${best.attempts})</div>
+      </div>
+    `;
+  }).join("");
+
+  document.getElementById("glCounters").innerHTML = glHTML;
 }
+
 
 function showDetail(m) {
   const winrate = calcWinrate(m);
