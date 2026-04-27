@@ -146,6 +146,7 @@ addForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const attempts = parseInt(newAttempts.value, 10);
   const wins = parseInt(newWins.value, 10);
+  
 
   matchups.push({
     type: newType.value,
@@ -163,6 +164,9 @@ addForm.addEventListener("submit", (e) => {
   newNotes.value = "";
 
   render();
+
+  // zavrit modalni okno
+  addModal.style.display = "none";
 });
 
 loadJSON();
