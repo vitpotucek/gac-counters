@@ -187,6 +187,14 @@ function filterForGL(glName) {
   });
 }
 
+function resetFilters() {
+  searchInput.value = "";
+  tierFilter.value = "";
+  typeFilter.value = "";
+  filterEnemyOnly = false;
+  currentPage = 1;
+  render();
+}
 
 
 // reset stránky při změně filtrů
@@ -198,5 +206,7 @@ searchInput.addEventListener("input", () => {
 
 tierFilter.addEventListener("change", () => { currentPage = 1; render(); });
 typeFilter.addEventListener("change", () => { currentPage = 1; render(); });
+document.getElementById("resetFilterBtn").addEventListener("click", resetFilters);
+
 
 loadJSON();
