@@ -121,6 +121,27 @@ th {
   background: #1d2233;
   text-align: left;
   cursor: pointer;
+  position: relative;
+  padding-right: 20px;
+}
+
+.sort-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.4;
+  font-size: 12px;
+  transition: opacity 0.2s ease;
+}
+
+th:hover .sort-icon {
+  opacity: 0.8;
+}
+
+.sort-active {
+  opacity: 1 !important;
+  font-weight: bold;
 }
 
 tr {
@@ -157,52 +178,22 @@ tr:hover {
 
 
 /* ============================================================
-   ANIMACE
+   TOOLTIP
    ============================================================ */
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-
-/* ============================================================
-   FOOTER
-   ============================================================ */
-
-footer {
-  text-align: center;
-  padding: 20px;
-  margin-top: 40px;
-  color: #777;
-}
-
-.pagination {
-  margin-top: 15px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.page-btn {
-  padding: 6px 12px;
+.tooltip {
+  position: absolute;
   background: #1d2233;
-  border: 1px solid #272b3a;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #e0e3eb;
-  transition: background 0.2s ease, transform 0.15s ease;
-}
-
-.page-btn:hover {
-  background: #2a3147;
-  transform: translateY(-2px);
-}
-
-.page-btn.active {
-  background: #3498db;
-  border-color: #3498db;
-  font-weight: bold;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #2c3145;
+  font-size: 13px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 999;
 }
 
 
@@ -293,25 +284,6 @@ footer {
 
 .collapsible-card.open .collapse-icon {
   transform: rotate(90deg);
-}
-
-/* ============================================================
-   TOOLTIP
-   ============================================================ */
-
-.tooltip {
-  position: absolute;
-  background: #1d2233;
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #2c3145;
-  font-size: 13px;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  z-index: 999;
 }
 
 
