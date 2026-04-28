@@ -1,5 +1,5 @@
 /* ============================================================
-   GAC COUNTERS – CLEAN STATIC VERSION (REVISED)
+   GAC COUNTERS – CLEAN STATIC VERSION (FINAL WITH SORT + TOOLTIP)
    ============================================================ */
 
 /* ---------- GLOBAL STATE ---------- */
@@ -7,9 +7,9 @@
 let matchups = [];
 let filterEnemyOnly = false;
 let currentPage = 1;
+
 let sortColumn = null;
 let sortDirection = 1; // 1 = asc, -1 = desc
-
 
 const ROWS_PER_PAGE = 10;
 
@@ -23,6 +23,7 @@ const tierFilter = document.getElementById("tierFilter");
 const typeFilter = document.getElementById("typeFilter");
 
 const autocompleteList = document.getElementById("autocompleteList");
+const tooltip = document.getElementById("tooltip");
 
 /* ---------- INITIALIZATION ---------- */
 
@@ -84,21 +85,20 @@ function render() {
 
   let filtered = enrichMatchups(matchups);
 
-   // SORTING
-if (sortColumn) {
-  filtered.sort((a, b) => {
-    const valA = a[sortColumn];
-    const valB = b[sortColumn];
+  /* ----- SORTING ----- */
+  if (sortColumn) {
+    filtered.sort((a, b) => {
+      const valA = a[sortColumn];
+      const valB = b[sortColumn];
 
-    if (typeof valA === "number" && typeof valB === "number") {
-      return (valA - valB) * sortDirection;
-    }
-    return valA.toString().localeCompare(valB.toString()) * sortDirection;
-  });
-}
+      if (typeof valA === "number" && typeof valB === "number") {
+        return (valA - valB) * sortDirection;
+      }
+      return valA.toString().localeCompare(valB.toString()) * sortDirection;
+    });
+  }
 
-
-  // SEARCH
+  /* ----- SEARCH ----- */
   if (search) {
     filtered = filtered.filter(m =>
       filterEnemyOnly
@@ -111,15 +111,15 @@ if (sortColumn) {
     );
   }
 
-  // FILTERS
+  /* ----- FILTERS ----- */
   if (tier) filtered = filtered.filter(m => m.tier === tier);
   if (type) filtered = filtered.filter(m => m.type === type);
 
-  // PAGINATION
+  /* ----- PAGINATION ----- */
   const start = (currentPage - 1) * ROWS_PER_PAGE;
   const pageItems = filtered.slice(start, start + ROWS_PER_PAGE);
 
-  // RENDER TABLE
+  /* ----- RENDER TABLE ----- */
   tableBody.innerHTML = pageItems
     .map(
       m => `
@@ -135,9 +135,17 @@ if (sortColumn) {
     )
     .join("");
 
-  // CLICK HANDLERS
+  /* ----- ROW EVENTS (DETAIL + TOOLTIP) ----- */
   tableBody.querySelectorAll("tr").forEach((tr, i) => {
-    tr.addEventListener("click", () => showDetail(pageItems[i]));
+    const rowData = pageItems[i];
+
+    tr.addEventListener("click", () => showDetail(rowData));
+
+    tr.addEventListener("mousemove", e => {
+      showTooltip(rowData, e.pageX, e.pageY);
+    });
+
+    tr.addEventListener("mouseleave", hideTooltip);
   });
 
   updateSummary();
@@ -214,6 +222,25 @@ function showDetail(m) {
     <p><strong>Tier:</strong> <span class="badge badge-${m.tier}">${m.tier}</span></p>
     <p><strong>Notes:</strong> ${m.notes || "—"}</p>
   `;
+}
+
+/* ---------- TOOLTIP ---------- */
+
+function showTooltip(m, x, y) {
+  tooltip.innerHTML = `
+    <strong>${m.enemyLead}</strong> vs <strong>${m.myLead}</strong><br>
+    Winrate: ${m.winrate}%<br>
+    Tier: ${m.tier}
+  `;
+  tooltip.style.left = x + 12 + "px";
+  tooltip.style.top = y + 12 + "px";
+  tooltip.style.opacity = 1;
+  tooltip.style.transform = "translateY(0)";
+}
+
+function hideTooltip() {
+  tooltip.style.opacity = 0;
+  tooltip.style.transform = "translateY(-6px)";
 }
 
 /* ---------- FILTERING ---------- */
@@ -301,6 +328,9 @@ document.addEventListener("click", e => {
       !e.target.closest("#autocompleteList")) {
     autocompleteList.style.display = "none";
   }
+});
+
+/* ---------- SORTING CLICK HANDLERS ---------- */
 
 document.querySelectorAll("th").forEach((th, index) => {
   const columns = ["type", "enemyLead", "myLead", "winrate", "tier", "attempts"];
@@ -309,7 +339,7 @@ document.querySelectorAll("th").forEach((th, index) => {
     const col = columns[index];
 
     if (sortColumn === col) {
-      sortDirection *= -1; // toggle asc/desc
+      sortDirection *= -1;
     } else {
       sortColumn = col;
       sortDirection = 1;
@@ -318,6 +348,4 @@ document.querySelectorAll("th").forEach((th, index) => {
     currentPage = 1;
     render();
   });
-});
-
 });
