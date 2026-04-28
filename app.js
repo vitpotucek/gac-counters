@@ -7,6 +7,9 @@
 let matchups = [];
 let filterEnemyOnly = false;
 let currentPage = 1;
+let sortColumn = null;
+let sortDirection = 1; // 1 = asc, -1 = desc
+
 
 const ROWS_PER_PAGE = 10;
 
@@ -80,6 +83,20 @@ function render() {
   const type = typeFilter.value;
 
   let filtered = enrichMatchups(matchups);
+
+   // SORTING
+if (sortColumn) {
+  filtered.sort((a, b) => {
+    const valA = a[sortColumn];
+    const valB = b[sortColumn];
+
+    if (typeof valA === "number" && typeof valB === "number") {
+      return (valA - valB) * sortDirection;
+    }
+    return valA.toString().localeCompare(valB.toString()) * sortDirection;
+  });
+}
+
 
   // SEARCH
   if (search) {
@@ -284,4 +301,23 @@ document.addEventListener("click", e => {
       !e.target.closest("#autocompleteList")) {
     autocompleteList.style.display = "none";
   }
+
+document.querySelectorAll("th").forEach((th, index) => {
+  const columns = ["type", "enemyLead", "myLead", "winrate", "tier", "attempts"];
+
+  th.addEventListener("click", () => {
+    const col = columns[index];
+
+    if (sortColumn === col) {
+      sortDirection *= -1; // toggle asc/desc
+    } else {
+      sortColumn = col;
+      sortDirection = 1;
+    }
+
+    currentPage = 1;
+    render();
+  });
+});
+
 });
