@@ -358,3 +358,31 @@ footer {
 .collapsible-card.open .collapse-icon {
   transform: rotate(90deg);
 }
+
+.gl-tile {
+  position: relative;
+  height: 120px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.gl-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45); /* tmavý overlay */
+}
+
+.gl-title {
+  position: relative;
+  z-index: 2;
+  font-size: 18px;
+}
