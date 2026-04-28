@@ -174,12 +174,12 @@ function showDetail(m) {
   const tier = calcTier(winrate, m.attempts);
 
   detailPanel.innerHTML = `
-    <p><strong>Typ:</strong> ${m.type}</p>
+    <p><strong>Type:</strong> ${m.type}</p>
     <p><strong>Enemy lead:</strong> ${m.enemyLead}</p>
     <p><strong>My lead:</strong> ${m.myLead}</p>
     <p><strong>Winrate:</strong> ${winrate}% (${m.wins}/${m.attempts})</p>
     <p><strong>Tier:</strong> <span class="badge badge-${tier}">${tier}</span></p>
-    <p><strong>Poznámky:</strong> ${m.notes || "—"}</p>
+    <p><strong>Notes:</strong> ${m.notes || "—"}</p>
   `;
 }
 
