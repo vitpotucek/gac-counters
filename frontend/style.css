@@ -339,3 +339,27 @@ footer {
 .gl-Leia-Organa { background-image: url("img/gl/leia.jpeg"); }
 .gl-Lord-Vader { background-image: url("img/gl/lv.jpg"); }
 .gl-Sith-Eternal-Emperor { background-image: url("img/gl/see.jpg"); }
+
+
+/* ====== FORMULAR PRO COUNTER ====== */
+
+.add-counter-section {
+  margin-top: 20px;
+}
+
+.add-counter-section .form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.add-counter-section input,
+.add-counter-section select {
+  width: 100%;
+}
+
+.btn-small {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
