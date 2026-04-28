@@ -114,6 +114,7 @@ th, td {
 th {
   background: #1d2233;
   text-align: left;
+  cursor: pointer;
 }
 
 tr {
@@ -192,74 +193,8 @@ footer {
   font-weight: bold;
 }
 
-.recommend-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
-  margin-top: 10px;
-}
 
-.recommend-card {
-  background: #1d2233;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #2c3145;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.recommend-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
-}
-
-.recommend-title {
-  font-weight: bold;
-  margin-bottom: 4px;
-  color: #fff;
-}
-
-.recommend-sub {
-  font-size: 14px;
-  color: #bfc4d6;
-}
-
-.gl-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.gl-tile {
-  background: #1d2233;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #2c3145;
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.15s ease, background 0.2s ease;
-}
-
-.gl-tile:hover::after {
-  background: rgba(0,0,0,0.6); /* silnější ztmavení */
-}
-
-.gl-tile:hover {
-  transform: scale(1.02);      /* jemný zoom */
-  transition: transform 0.2s ease;
-}
-
-
-.gl-title {
-  font-weight: bold;
-  margin-bottom: 4px;
-  color: #fff;
-}
-
-.gl-sub {
-  font-size: 13px;
-  color: #bfc4d6;
-}
+/* ====== AUTOCOMPLETE ====== */
 
 .search-wrapper {
   position: relative;
@@ -267,31 +202,8 @@ footer {
 }
 
 .search-wrapper input {
-  padding-right: 28px; /* místo pro ikonku */
-}
-
-.reset-icon {
-  position: absolute;
-  right: 6px;
-  bottom: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
-}
-
-.reset-icon:hover {
-  opacity: 1;
-}
-
-.search-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.search-wrapper input {
-  padding-right: 30px; /* místo pro ikonku */
-  height: 32px;        /* sjednocení výšky */
+  padding-right: 30px;
+  height: 32px;
   line-height: 32px;
 }
 
@@ -333,6 +245,10 @@ footer {
 .autocomplete-item:hover {
   background: #2a3147;
 }
+
+
+/* ====== COLLAPSIBLE ====== */
+
 .collapsible-card {
   overflow: hidden;
 }
@@ -355,13 +271,22 @@ footer {
   transition: max-height 0.25s ease;
 }
 
-/* když je otevřeno */
 .collapsible-card.open .collapsible-content {
-  max-height: 1000px; /* dostatečně velké */
+  max-height: 1000px;
 }
 
 .collapsible-card.open .collapse-icon {
   transform: rotate(90deg);
+}
+
+
+/* ====== GL TILE (NOVÁ VERZE) ====== */
+
+.gl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .gl-tile {
@@ -377,13 +302,23 @@ footer {
   font-weight: bold;
   cursor: pointer;
   overflow: hidden;
+  transition: transform 0.2s ease;
 }
 
 .gl-tile::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.45); /* tmavý overlay */
+  background: rgba(0,0,0,0.45);
+  transition: background 0.2s ease;
+}
+
+.gl-tile:hover {
+  transform: scale(1.02);
+}
+
+.gl-tile:hover::after {
+  background: rgba(0,0,0,0.6);
 }
 
 .gl-title {
@@ -391,38 +326,16 @@ footer {
   z-index: 2;
   font-size: 18px;
 }
-.gl-Ahsoka-Tano {
-  background-image: url("img/gl/ahsoka.jpg");
-}
 
-.gl-Rey {
-  background-image: url("img/gl/rey.jpg");
-}
 
-.gl-Supreme-Leader-Kylo-Ren {
-  background-image: url("img/gl/slkr.jpg");
-}
+/* ====== GL OBRÁZKY ====== */
 
-.gl-Jedi-Master-Luke-Skywalker {
-  background-image: url("img/gl/jml.jpg");
-}
-
-.gl-Jedi-Master-Kenobi {
-  background-image: url("img/gl/jmk.jpg");
-}
-
-.gl-Jabba {
-  background-image: url("img/gl/jabba.jpg");
-}
-
-.gl-Leia-Organa {
-  background-image: url("img/gl/leia.jpg");
-}
-
-.gl-Lord-Vader {
-  background-image: url("img/gl/lv.jpg");
-}
-
-.gl-Sith-Eternal-Emperor {
-  background-image: url("img/gl/see.jpg");
-}
+.gl-Ahsoka-Tano { background-image: url("img/gl/ahsoka.jpg"); }
+.gl-Rey { background-image: url("img/gl/rey.jpg"); }
+.gl-Supreme-Leader-Kylo-Ren { background-image: url("img/gl/slkr.jpg"); }
+.gl-Jedi-Master-Luke-Skywalker { background-image: url("img/gl/jml.jpg"); }
+.gl-Jedi-Master-Kenobi { background-image: url("img/gl/jmk.jpg"); }
+.gl-Jabba { background-image: url("img/gl/jabba.jpg"); }
+.gl-Leia-Organa { background-image: url("img/gl/leia.jpg"); }
+.gl-Lord-Vader { background-image: url("img/gl/lv.jpg"); }
+.gl-Sith-Eternal-Emperor { background-image: url("img/gl/see.jpg"); }
