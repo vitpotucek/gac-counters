@@ -30,6 +30,7 @@ const tooltip = document.getElementById("tooltip");
 document.addEventListener("DOMContentLoaded", () => {
   setupCollapsible();
   loadJSON();
+  setupSortingIcons();
 });
 
 /* ---------- LOAD DATA ---------- */
@@ -198,8 +199,6 @@ function updateSummary() {
       const counters = fullList.filter(m => m.enemyLead === gl);
       if (!counters.length) return "";
 
-      const best = counters.reduce((a, b) => (b.winrate > a.winrate ? b : a));
-
       return `
         <div class="gl-tile gl-${gl.replace(/ /g, "-")}" onclick="filterForGL('${gl}')">
           <div class="gl-title">${gl}</div>
@@ -330,22 +329,50 @@ document.addEventListener("click", e => {
   }
 });
 
-/* ---------- SORTING CLICK HANDLERS ---------- */
+/* ---------- SORTING ICONS + CLICK HANDLERS ---------- */
 
-document.querySelectorAll("th").forEach((th, index) => {
+function setupSortingIcons() {
+  const headers = document.querySelectorAll("th");
   const columns = ["type", "enemyLead", "myLead", "winrate", "tier", "attempts"];
 
-  th.addEventListener("click", () => {
-    const col = columns[index];
-
-    if (sortColumn === col) {
-      sortDirection *= -1;
-    } else {
-      sortColumn = col;
-      sortDirection = 1;
-    }
-
-    currentPage = 1;
-    render();
+  headers.forEach(th => {
+    const icon = document.createElement("span");
+    icon.classList.add("sort-icon");
+    icon.textContent = "↕";
+    th.appendChild(icon);
   });
-});
+
+  headers.forEach((th, index) => {
+    th.addEventListener("click", () => {
+      const col = columns[index];
+
+      if (sortColumn === col) {
+        sortDirection *= -1;
+      } else {
+        sortColumn = col;
+        sortDirection = 1;
+      }
+
+      updateSortIcons();
+      currentPage = 1;
+      render();
+    });
+  });
+}
+
+function updateSortIcons() {
+  const icons = document.querySelectorAll(".sort-icon");
+  const columns = ["type", "enemyLead", "myLead", "winrate", "tier", "attempts"];
+
+  icons.forEach((icon, i) => {
+    const col = columns[i];
+
+    if (col === sortColumn) {
+      icon.classList.add("sort-active");
+      icon.textContent = sortDirection === 1 ? "↑" : "↓";
+    } else {
+      icon.classList.remove("sort-active");
+      icon.textContent = "↕";
+    }
+  });
+}
