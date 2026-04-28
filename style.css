@@ -295,6 +295,25 @@ footer {
   transform: rotate(90deg);
 }
 
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+
+.tooltip {
+  position: absolute;
+  background: #1d2233;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #2c3145;
+  font-size: 13px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 999;
+}
+
 
 /* ============================================================
    GL TILE
