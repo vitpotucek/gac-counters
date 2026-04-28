@@ -55,6 +55,46 @@
   </div>
 </section>
 
+<section class="add-counter-section card">
+  <h2>New Counter</h2>
+
+  <form id="addCounterForm">
+    <div class="form-row">
+      <label>Type:
+        <select name="type">
+          <option value="ground">Ground</option>
+          <option value="fleet">Fleet</option>
+        </select>
+      </label>
+
+      <label>Enemy lead:
+        <input type="text" name="enemyLead" required>
+      </label>
+
+      <label>My lead:
+        <input type="text" name="myLead" required>
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label>Wins:
+        <input type="number" name="wins" min="0" required>
+      </label>
+
+      <label>Attempts:
+        <input type="number" name="attempts" min="1" required>
+      </label>
+    </div>
+
+    <label>Notes:
+      <input type="text" name="notes">
+    </label>
+
+    <button type="submit" class="page-btn">Add</button>
+  </form>
+</section>
+
+
 
     <section class="table-section">
       <h2>Matchups</h2>
