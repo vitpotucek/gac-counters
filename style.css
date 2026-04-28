@@ -21,26 +21,35 @@ header {
   border-bottom: 1px solid #272b3a;
 }
 
+
+/* ============================================================
+   FILTER BAR (FINAL FIX)
+   ============================================================ */
+
 .controls {
   display: flex;
   gap: 20px;
   margin-top: 15px;
   flex-wrap: wrap;
+  align-items: flex-end; /* zarovnání všech prvků */
 }
 
 label {
   display: flex;
   flex-direction: column;
   font-size: 14px;
+  gap: 4px;
 }
 
-input, select {
-  padding: 6px;
-  margin-top: 4px;
+input,
+select {
+  height: 36px;              /* sjednocená výška */
+  padding: 6px 10px;
   border-radius: 4px;
   border: 1px solid #3a3f55;
   background: #0f111a;
   color: #fff;
+  box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -55,27 +64,23 @@ input:focus, select:focus {
 }
 
 
-/* ============================================================
-   SEARCH WRAPPER (FINAL FIX)
-   ============================================================ */
+/* SEARCH WRAPPER */
 
 .search-wrapper {
   position: relative;
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 
 .search-wrapper input {
-  height: 36px;
   padding-right: 36px; /* místo pro ikonku */
-  box-sizing: border-box;
 }
 
 .reset-icon {
   position: absolute;
   right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 10px; /* perfektní zarovnání */
   cursor: pointer;
 
   font-size: 16px;
