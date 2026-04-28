@@ -240,10 +240,15 @@ footer {
   transition: transform 0.15s ease, background 0.2s ease;
 }
 
-.gl-tile:hover {
-  transform: translateY(-3px);
-  background: #242b40;
+.gl-tile:hover::after {
+  background: rgba(0,0,0,0.6); /* silnější ztmavení */
 }
+
+.gl-tile:hover {
+  transform: scale(1.02);      /* jemný zoom */
+  transition: transform 0.2s ease;
+}
+
 
 .gl-title {
   font-weight: bold;
