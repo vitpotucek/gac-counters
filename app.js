@@ -157,12 +157,11 @@ function updateSummary(list) {
     const best = counters.sort((a, b) => b.winrate - a.winrate)[0];
 
     return `
-      <div class="gl-tile" onclick="filterForGL('${gl}')">
-        <div class="gl-title">${gl}</div>
-        <div class="gl-sub">${best.myLead} → ${best.enemyLead}</div>
-        <div class="gl-sub">${best.winrate}% (${best.wins}/${best.attempts})</div>
-      </div>
-    `;
+  <div class="gl-tile gl-${gl.replace(/ /g, "-")}" onclick="filterForGL('${gl}')">
+    <div class="gl-title">${gl}</div>
+  </div>
+`;
+
   }).join("");
 
   document.getElementById("glCounters").innerHTML = glHTML;
