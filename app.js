@@ -48,7 +48,7 @@ function setupCollapsible() {
   const card = document.querySelector(".collapsible-card");
   const header = document.querySelector(".collapsible-header");
 
-  card.classList.remove("open");
+  card.classList.add("open");
   header.addEventListener("click", () => card.classList.toggle("open"));
 }
 
