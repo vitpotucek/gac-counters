@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vito's GAC counters DB</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <h1>Vito's GAC counters DB</h1>
+
+    <div class="controls">
+<label class="search-wrapper">
+  Search:
+  <input type="text" id="searchInput" placeholder="Enemy lead, My lead,.." />
+  <span id="resetFilterBtn" class="reset-icon" title="Reset filtru">⟲</span>
+</label>
+<div id="autocompleteList" class="autocomplete-list"></div>
+
+      <label>
+        Tier:
+        <select id="tierFilter">
+          <option value="">All</option>
+          <option value="S">S</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </label>
+
+      <label>
+        Typ:
+        <select id="typeFilter">
+          <option value="">All</option>
+          <option value="ground">Ground</option>
+          <option value="ship">Ship</option>
+          <option value="cleanup">Cleanup</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main>
+<section class="summary">
+  <div class="card collapsible-card">
+    <h2 class="collapsible-header">
+      GL counters
+      <span class="collapse-icon">▶</span>
+    </h2>
+
+    <div id="glCollapseContent" class="collapsible-content">
+      <div id="glCounters" class="gl-grid"></div>
+    </div>
+  </div>
+</section>
+
+
+    <section class="table-section">
+      <h2>Matchups</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Enemy lead</th>
+            <th>My lead</th>
+            <th>Winrate</th>
+            <th>Tier</th>
+            <th>Attemts</th>
+          </tr>
+        </thead>
+        <tbody id="matchupTableBody"></tbody>
+      </table>
+      <div id="pagination" class="pagination"></div>
+    </section>
+
+    <section class="detail-section">
+      <h2>Counter detail</h2>
+      <div id="detailPanel">
+        <p>Choose a counter for detail</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <small>Vito's GAC counters DB</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
