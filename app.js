@@ -1,11 +1,34 @@
-let filterEnemyOnly = false;
+/* ============================================================
+   GAC COUNTERS – CLEAN & REFACTORED VERSION
+   ============================================================ */
 
-let currentPage = 1;
-const ROWS_PER_PAGE = 10;
-
-
+/* ---------- GLOBAL STATE ---------- */
 
 let matchups = [];
+let filterEnemyOnly = false;
+let currentPage = 1;
+
+const ROWS_PER_PAGE = 10;
+
+/* ---------- DOM ELEMENTS ---------- */
+
+const tableBody = document.getElementById("matchupTableBody");
+const detailPanel = document.getElementById("detailPanel");
+
+const searchInput = document.getElementById("searchInput");
+const tierFilter = document.getElementById("tierFilter");
+const typeFilter = document.getElementById("typeFilter");
+
+const autocompleteList = document.getElementById("autocompleteList");
+
+/* ---------- INITIALIZATION ---------- */
+
+document.addEventListener("DOMContentLoaded", () => {
+  setupCollapsible();
+  loadJSON();
+});
+
+/* ---------- LOAD DATA ---------- */
 
 async function loadJSON() {
   const response = await fetch("data.json");
@@ -14,22 +37,23 @@ async function loadJSON() {
   render();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+/* ---------- COLLAPSIBLE GL SECTION ---------- */
+
+function setupCollapsible() {
   const card = document.querySelector(".collapsible-card");
   const header = document.querySelector(".collapsible-header");
 
-  // defaultně zavřené
   card.classList.remove("open");
 
   header.addEventListener("click", () => {
     card.classList.toggle("open");
   });
-});
+}
 
+/* ---------- CALCULATIONS ---------- */
 
 function calcWinrate(m) {
-  if (!m.attempts) return 0;
-  return Math.round((m.wins / m.attempts) * 100);
+  return m.attempts ? Math.round((m.wins / m.attempts) * 100) : 0;
 }
 
 function calcTier(winrate, attempts) {
@@ -39,73 +63,75 @@ function calcTier(winrate, attempts) {
   return "C";
 }
 
-const autocompleteList = document.getElementById("autocompleteList");
-const tableBody = document.getElementById("matchupTableBody");
-const totalMatchupsEl = document.getElementById("totalMatchups");
-const avgWinrateEl = document.getElementById("avgWinrate");
-const sTierCountEl = document.getElementById("sTierCount");
-const recommendationsEl = document.getElementById("recommendations");
-const detailPanel = document.getElementById("detailPanel");
+function enrichMatchups(list) {
+  return list.map((m, idx) => {
+    const winrate = calcWinrate(m);
+    return {
+      ...m,
+      id: idx,
+      winrate,
+      tier: calcTier(winrate, m.attempts)
+    };
+  });
+}
 
-const searchInput = document.getElementById("searchInput");
-const tierFilter = document.getElementById("tierFilter");
-const typeFilter = document.getElementById("typeFilter");
+/* ---------- RENDER MAIN TABLE ---------- */
 
 function render() {
   const search = searchInput.value.toLowerCase();
   const tier = tierFilter.value;
   const type = typeFilter.value;
 
-  let filtered = matchups.map((m, idx) => {
-    const winrate = calcWinrate(m);
-    const t = calcTier(winrate, m.attempts);
-    return { ...m, id: idx, winrate, tier: t };
-  });
+  let filtered = enrichMatchups(matchups);
 
-if (search) {
-  if (filterEnemyOnly) {
-    // filtrujeme jen podle enemyLead
-    filtered = filtered.filter(m =>
-      m.enemyLead.toLowerCase().includes(search)
-    );
-  } else {
-    // původní chování
-    filtered = filtered.filter(m =>
-      m.enemyLead.toLowerCase().includes(search) ||
-      m.myLead.toLowerCase().includes(search) ||
-      (m.notes && m.notes.toLowerCase().includes(search))
-    );
+  // SEARCH
+  if (search) {
+    filtered = filtered.filter(m => {
+      if (filterEnemyOnly) {
+        return m.enemyLead.toLowerCase().includes(search);
+      }
+      return (
+        m.enemyLead.toLowerCase().includes(search) ||
+        m.myLead.toLowerCase().includes(search) ||
+        (m.notes && m.notes.toLowerCase().includes(search))
+      );
+    });
   }
-}
 
-
+  // FILTERS
   if (tier) filtered = filtered.filter(m => m.tier === tier);
   if (type) filtered = filtered.filter(m => m.type === type);
 
-  // stránkování
+  // PAGINATION
   const start = (currentPage - 1) * ROWS_PER_PAGE;
-  const end = start + ROWS_PER_PAGE;
-  const pageItems = filtered.slice(start, end);
+  const pageItems = filtered.slice(start, start + ROWS_PER_PAGE);
 
-  tableBody.innerHTML = "";
+  // RENDER TABLE
+  tableBody.innerHTML = pageItems
+    .map(
+      m => `
+      <tr>
+        <td>${m.type}</td>
+        <td>${m.enemyLead}</td>
+        <td>${m.myLead}</td>
+        <td>${m.winrate}%</td>
+        <td><span class="badge badge-${m.tier}">${m.tier}</span></td>
+        <td>${m.wins}/${m.attempts}</td>
+      </tr>
+    `
+    )
+    .join("");
 
-  pageItems.forEach(m => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${m.type}</td>
-      <td>${m.enemyLead}</td>
-      <td>${m.myLead}</td>
-      <td>${m.winrate}%</td>
-      <td><span class="badge badge-${m.tier}">${m.tier}</span></td>
-      <td>${m.wins}/${m.attempts}</td>
-    `;
-    tr.addEventListener("click", () => showDetail(m));
-    tableBody.appendChild(tr);
+  // CLICK HANDLERS
+  tableBody.querySelectorAll("tr").forEach((tr, i) => {
+    tr.addEventListener("click", () => showDetail(pageItems[i]));
   });
 
   updateSummary(filtered);
   renderPagination(filtered.length);
 }
+
+/* ---------- PAGINATION ---------- */
 
 function renderPagination(totalItems) {
   const pagination = document.getElementById("pagination");
@@ -128,14 +154,10 @@ function renderPagination(totalItems) {
   }
 }
 
-function updateSummary(list) {
-  const fullList = matchups.map((m, idx) => {
-    const winrate = calcWinrate(m);
-    const t = calcTier(winrate, m.attempts);
-    return { ...m, id: idx, winrate, tier: t };
-  });
+/* ---------- SUMMARY (GL COUNTERS) ---------- */
 
-  // GL doporučení
+function updateSummary(list) {
+  const fullList = enrichMatchups(matchups);
 
   const glList = [
     "Ahsoka Tano",
@@ -150,50 +172,43 @@ function updateSummary(list) {
     "Sith Eternal Emperor"
   ];
 
-  const glHTML = glList.map(gl => {
-    const counters = fullList.filter(m => m.enemyLead.includes(gl));
-    if (counters.length === 0) return "";
+  const glHTML = glList
+    .map(gl => {
+      const counters = fullList.filter(m => m.enemyLead.includes(gl));
+      if (!counters.length) return "";
 
-    const best = counters.sort((a, b) => b.winrate - a.winrate)[0];
+      const best = counters.sort((a, b) => b.winrate - a.winrate)[0];
 
-    return `
-  <div class="gl-tile gl-${gl.replace(/ /g, "-")}" onclick="filterForGL('${gl}')">
-    <div class="gl-title">${gl}</div>
-  </div>
-`;
-
-  }).join("");
+      return `
+        <div class="gl-tile gl-${gl.replace(/ /g, "-")}" onclick="filterForGL('${gl}')">
+          <div class="gl-title">${gl}</div>
+        </div>
+      `;
+    })
+    .join("");
 
   document.getElementById("glCounters").innerHTML = glHTML;
 }
 
-
+/* ---------- DETAIL PANEL ---------- */
 
 function showDetail(m) {
-  const winrate = calcWinrate(m);
-  const tier = calcTier(winrate, m.attempts);
-
   detailPanel.innerHTML = `
     <p><strong>Type:</strong> ${m.type}</p>
     <p><strong>Enemy lead:</strong> ${m.enemyLead}</p>
     <p><strong>My lead:</strong> ${m.myLead}</p>
-    <p><strong>Winrate:</strong> ${winrate}% (${m.wins}/${m.attempts})</p>
-    <p><strong>Tier:</strong> <span class="badge badge-${tier}">${tier}</span></p>
+    <p><strong>Winrate:</strong> ${m.winrate}% (${m.wins}/${m.attempts})</p>
+    <p><strong>Tier:</strong> <span class="badge badge-${m.tier}">${m.tier}</span></p>
     <p><strong>Notes:</strong> ${m.notes || "—"}</p>
   `;
 }
 
+/* ---------- FILTERING ---------- */
 
 function filterForGL(glName) {
-  // zapneme režim "filtruj jen enemyLead"
   filterEnemyOnly = true;
-
-  // nastavíme vyhledávání
   searchInput.value = glName;
-
-  // necháme všechny typy
   typeFilter.value = "";
-
   currentPage = 1;
   render();
 
@@ -211,21 +226,25 @@ function resetFilters() {
   render();
 }
 
+/* ---------- AUTOCOMPLETE ---------- */
+
 function updateAutocomplete() {
   const text = searchInput.value.toLowerCase();
+
   if (!text) {
     autocompleteList.style.display = "none";
     return;
   }
 
-  // unikátní návrhy z enemyLead + myLead
   const suggestions = [...new Set(
     matchups
-      .flatMap(m => [m.enemyLead, m.myLead])
+      .flatMap(m =>
+        filterEnemyOnly ? [m.enemyLead] : [m.enemyLead, m.myLead]
+      )
       .filter(name => name.toLowerCase().includes(text))
-  )].slice(0, 10); // max 10 návrhů
+  )].slice(0, 10);
 
-  if (suggestions.length === 0) {
+  if (!suggestions.length) {
     autocompleteList.style.display = "none";
     return;
   }
@@ -237,19 +256,18 @@ function updateAutocomplete() {
   autocompleteList.style.display = "block";
 }
 
+/* ---------- EVENT LISTENERS ---------- */
 
-
-// reset stránky při změně filtrů
-searchInput.addEventListener("input", () => { 
-  filterEnemyOnly = false; 
-  currentPage = 1; 
+searchInput.addEventListener("input", () => {
+  filterEnemyOnly = false;
+  currentPage = 1;
   updateAutocomplete();
-  render(); 
+  render();
 });
-autocompleteList.addEventListener("click", (e) => {
+
+autocompleteList.addEventListener("click", e => {
   if (e.target.classList.contains("autocomplete-item")) {
-    const value = e.target.getAttribute("data-value");
-    searchInput.value = value;
+    searchInput.value = e.target.dataset.value;
     filterEnemyOnly = false;
     currentPage = 1;
     render();
@@ -257,15 +275,23 @@ autocompleteList.addEventListener("click", (e) => {
   }
 });
 
-tierFilter.addEventListener("change", () => { currentPage = 1; render(); });
-typeFilter.addEventListener("change", () => { currentPage = 1; render(); });
+tierFilter.addEventListener("change", () => {
+  autocompleteList.style.display = "none";
+  currentPage = 1;
+  render();
+});
+
+typeFilter.addEventListener("change", () => {
+  autocompleteList.style.display = "none";
+  currentPage = 1;
+  render();
+});
+
 document.getElementById("resetFilterBtn").addEventListener("click", resetFilters);
-document.addEventListener("click", (e) => {
-  if (!e.target.closest(".search-wrapper") && !e.target.closest("#autocompleteList")) {
+
+document.addEventListener("click", e => {
+  if (!e.target.closest(".search-wrapper") &&
+      !e.target.closest("#autocompleteList")) {
     autocompleteList.style.display = "none";
   }
 });
-
-
-
-loadJSON();
