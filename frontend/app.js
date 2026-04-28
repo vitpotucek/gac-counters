@@ -1,8 +1,8 @@
 /* ============================================================
-   GAC COUNTERS – CLEAN & REFACTORED VERSION
+   GAC COUNTERS – FRONTEND S BACKENDEM + CRUD
    ============================================================ */
 
-/* ---------- GLOBAL STATE ---------- */
+const API_BASE = "http://localhost:3000";
 
 let matchups = [];
 let filterEnemyOnly = false;
@@ -20,40 +20,50 @@ const tierFilter = document.getElementById("tierFilter");
 const typeFilter = document.getElementById("typeFilter");
 
 const autocompleteList = document.getElementById("autocompleteList");
+const addCounterForm = document.getElementById("addCounterForm");
 
-/* ---------- INITIALIZATION ---------- */
+/* ---------- INIT ---------- */
 
 document.addEventListener("DOMContentLoaded", () => {
   setupCollapsible();
-  loadJSON();
+  loadCounters();
 });
 
+/* ---------- BACKEND CALLS ---------- */
 
-/* ---------- ADD COUNTER ---------- */
-
-
-async function addCounter(counter) {
-  await fetch("http://localhost:3000/counters", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(counter)
-  });
-
-  loadJSON(); // refresh dat
-}
-
-
-
-/* ---------- LOAD DATA ---------- */
-
-async function loadJSON() {
-  const response = await fetch("data.json");
+async function loadCounters() {
+  const response = await fetch(`${API_BASE}/counters`);
   matchups = await response.json();
   currentPage = 1;
   render();
 }
 
-/* ---------- COLLAPSIBLE GL SECTION ---------- */
+async function addCounter(counter) {
+  await fetch(`${API_BASE}/counters`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(counter)
+  });
+  await loadCounters();
+}
+
+async function updateCounter(id, updates) {
+  await fetch(`${API_BASE}/counters/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updates)
+  });
+  await loadCounters();
+}
+
+async function deleteCounter(id) {
+  await fetch(`${API_BASE}/counters/${id}`, {
+    method: "DELETE"
+  });
+  await loadCounters();
+}
+
+/* ---------- COLLAPSIBLE ---------- */
 
 function setupCollapsible() {
   const card = document.querySelector(".collapsible-card");
@@ -80,11 +90,10 @@ function calcTier(winrate, attempts) {
 }
 
 function enrichMatchups(list) {
-  return list.map((m, idx) => {
+  return list.map(m => {
     const winrate = calcWinrate(m);
     return {
       ...m,
-      id: idx,
       winrate,
       tier: calcTier(winrate, m.attempts)
     };
@@ -100,7 +109,6 @@ function render() {
 
   let filtered = enrichMatchups(matchups);
 
-  // SEARCH
   if (search) {
     filtered = filtered.filter(m => {
       if (filterEnemyOnly) {
@@ -114,33 +122,57 @@ function render() {
     });
   }
 
-  // FILTERS
   if (tier) filtered = filtered.filter(m => m.tier === tier);
   if (type) filtered = filtered.filter(m => m.type === type);
 
-  // PAGINATION
   const start = (currentPage - 1) * ROWS_PER_PAGE;
   const pageItems = filtered.slice(start, start + ROWS_PER_PAGE);
 
-  // RENDER TABLE
   tableBody.innerHTML = pageItems
     .map(
       m => `
-      <tr>
+      <tr data-id="${m.id}">
         <td>${m.type}</td>
         <td>${m.enemyLead}</td>
         <td>${m.myLead}</td>
         <td>${m.winrate}%</td>
         <td><span class="badge badge-${m.tier}">${m.tier}</span></td>
         <td>${m.wins}/${m.attempts}</td>
+        <td>
+          <button class="page-btn btn-small edit-btn">Edit</button>
+          <button class="page-btn btn-small delete-btn">X</button>
+        </td>
       </tr>
     `
     )
     .join("");
 
-  // CLICK HANDLERS
   tableBody.querySelectorAll("tr").forEach((tr, i) => {
-    tr.addEventListener("click", () => showDetail(pageItems[i]));
+    const rowData = pageItems[i];
+
+    tr.addEventListener("click", e => {
+      // aby klik na tlačítka nespouštěl detail
+      if (e.target.classList.contains("edit-btn") ||
+          e.target.classList.contains("delete-btn")) {
+        return;
+      }
+      showDetail(rowData);
+    });
+
+    const editBtn = tr.querySelector(".edit-btn");
+    const deleteBtn = tr.querySelector(".delete-btn");
+
+    editBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      openEditPrompt(rowData);
+    });
+
+    deleteBtn.addEventListener("click", async e => {
+      e.stopPropagation();
+      if (confirm("Opravdu smazat tento counter?")) {
+        await deleteCounter(rowData.id);
+      }
+    });
   });
 
   updateSummary(filtered);
@@ -170,9 +202,9 @@ function renderPagination(totalItems) {
   }
 }
 
-/* ---------- SUMMARY (GL COUNTERS) ---------- */
+/* ---------- SUMMARY (GL) ---------- */
 
-function updateSummary(list) {
+function updateSummary() {
   const fullList = enrichMatchups(matchups);
 
   const glList = [
@@ -272,6 +304,24 @@ function updateAutocomplete() {
   autocompleteList.style.display = "block";
 }
 
+/* ---------- EDIT PROMPT (JEDNODUCHÁ VARIANTA) ---------- */
+
+function openEditPrompt(m) {
+  const wins = prompt("Výhry:", m.wins);
+  if (wins === null) return;
+
+  const attempts = prompt("Pokusy:", m.attempts);
+  if (attempts === null) return;
+
+  const notes = prompt("Poznámky:", m.notes || "");
+
+  updateCounter(m.id, {
+    wins: Number(wins),
+    attempts: Number(attempts),
+    notes
+  });
+}
+
 /* ---------- EVENT LISTENERS ---------- */
 
 searchInput.addEventListener("input", () => {
@@ -311,3 +361,5 @@ document.addEventListener("click", e => {
     autocompleteList.style.display = "none";
   }
 });
+
+addCounterForm.addEventListener("submit", async e => {
