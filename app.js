@@ -1,5 +1,5 @@
 /* ============================================================
-   GAC COUNTERS – CLEAN & REFACTORED VERSION
+   GAC COUNTERS – CLEAN STATIC VERSION (REVISED)
    ============================================================ */
 
 /* ---------- GLOBAL STATE ---------- */
@@ -44,10 +44,7 @@ function setupCollapsible() {
   const header = document.querySelector(".collapsible-header");
 
   card.classList.remove("open");
-
-  header.addEventListener("click", () => {
-    card.classList.toggle("open");
-  });
+  header.addEventListener("click", () => card.classList.toggle("open"));
 }
 
 /* ---------- CALCULATIONS ---------- */
@@ -86,16 +83,15 @@ function render() {
 
   // SEARCH
   if (search) {
-    filtered = filtered.filter(m => {
-      if (filterEnemyOnly) {
-        return m.enemyLead.toLowerCase().includes(search);
-      }
-      return (
-        m.enemyLead.toLowerCase().includes(search) ||
-        m.myLead.toLowerCase().includes(search) ||
-        (m.notes && m.notes.toLowerCase().includes(search))
-      );
-    });
+    filtered = filtered.filter(m =>
+      filterEnemyOnly
+        ? m.enemyLead.toLowerCase().includes(search)
+        : (
+            m.enemyLead.toLowerCase().includes(search) ||
+            m.myLead.toLowerCase().includes(search) ||
+            (m.notes && m.notes.toLowerCase().includes(search))
+          )
+    );
   }
 
   // FILTERS
@@ -127,7 +123,7 @@ function render() {
     tr.addEventListener("click", () => showDetail(pageItems[i]));
   });
 
-  updateSummary(filtered);
+  updateSummary();
   renderPagination(filtered.length);
 }
 
@@ -156,7 +152,7 @@ function renderPagination(totalItems) {
 
 /* ---------- SUMMARY (GL COUNTERS) ---------- */
 
-function updateSummary(list) {
+function updateSummary() {
   const fullList = enrichMatchups(matchups);
 
   const glList = [
@@ -174,10 +170,10 @@ function updateSummary(list) {
 
   const glHTML = glList
     .map(gl => {
-      const counters = fullList.filter(m => m.enemyLead.includes(gl));
+      const counters = fullList.filter(m => m.enemyLead === gl);
       if (!counters.length) return "";
 
-      const best = counters.sort((a, b) => b.winrate - a.winrate)[0];
+      const best = counters.reduce((a, b) => (b.winrate > a.winrate ? b : a));
 
       return `
         <div class="gl-tile gl-${gl.replace(/ /g, "-")}" onclick="filterForGL('${gl}')">
@@ -212,9 +208,9 @@ function filterForGL(glName) {
   currentPage = 1;
   render();
 
-  document.querySelector(".table-section").scrollIntoView({
-    behavior: "smooth"
-  });
+  try {
+    document.querySelector(".table-section").scrollIntoView({ behavior: "smooth" });
+  } catch {}
 }
 
 function resetFilters() {
@@ -231,10 +227,7 @@ function resetFilters() {
 function updateAutocomplete() {
   const text = searchInput.value.toLowerCase();
 
-  if (!text) {
-    autocompleteList.style.display = "none";
-    return;
-  }
+  if (!text) return (autocompleteList.style.display = "none");
 
   const suggestions = [...new Set(
     matchups
@@ -244,10 +237,7 @@ function updateAutocomplete() {
       .filter(name => name.toLowerCase().includes(text))
   )].slice(0, 10);
 
-  if (!suggestions.length) {
-    autocompleteList.style.display = "none";
-    return;
-  }
+  if (!suggestions.length) return (autocompleteList.style.display = "none");
 
   autocompleteList.innerHTML = suggestions
     .map(s => `<div class="autocomplete-item" data-value="${s}">${s}</div>`)
