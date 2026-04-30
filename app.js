@@ -31,23 +31,40 @@ const analyticsSection = document.getElementById("analyticsSection");
 const navCounters = document.getElementById("navCounters");
 const navAnalytics = document.getElementById("navAnalytics");
 
+const sidebar = document.getElementById("sidebar");
+const menuToggle = document.getElementById("menuToggle");
+
 /* ---------- INITIALIZATION ---------- */
 
 document.addEventListener("DOMContentLoaded", () => {
   setupCollapsible();
   setupNav();
+  setupSidebarToggle();
   loadJSON();
   setupSortingIcons();
 });
 
-/* ---------- NAVIGATION ---------- */
+/* ============================================================
+   SIDEBAR + NAVIGATION
+   ============================================================ */
+
+function setupSidebarToggle() {
+  if (!menuToggle || !sidebar) return;
+
+  menuToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("collapsed");
+  });
+}
 
 function setupNav() {
+  if (!navCounters || !navAnalytics) return;
+
   navCounters.addEventListener("click", () => {
     navCounters.classList.add("active");
     navAnalytics.classList.remove("active");
     countersSection.style.display = "block";
     analyticsSection.style.display = "none";
+    sidebar.classList.add("collapsed"); // auto-close on mobile
   });
 
   navAnalytics.addEventListener("click", () => {
@@ -55,11 +72,14 @@ function setupNav() {
     navCounters.classList.remove("active");
     countersSection.style.display = "none";
     analyticsSection.style.display = "block";
+    sidebar.classList.add("collapsed"); // auto-close on mobile
     renderAnalytics();
   });
 }
 
-/* ---------- LOAD DATA ---------- */
+/* ============================================================
+   LOAD DATA
+   ============================================================ */
 
 async function loadJSON() {
   const response = await fetch("data.json");
@@ -68,7 +88,9 @@ async function loadJSON() {
   render();
 }
 
-/* ---------- COLLAPSIBLE GL SECTION ---------- */
+/* ============================================================
+   COLLAPSIBLE GL SECTION
+   ============================================================ */
 
 function setupCollapsible() {
   const card = document.querySelector(".collapsible-card");
@@ -80,7 +102,9 @@ function setupCollapsible() {
   header.addEventListener("click", () => card.classList.toggle("open"));
 }
 
-/* ---------- HELPERS ---------- */
+/* ============================================================
+   HELPERS
+   ============================================================ */
 
 function calcWinrate(m) {
   return m.attempts ? Math.round((m.wins / m.attempts) * 100) : 0;
@@ -125,7 +149,9 @@ function colorClassForWinrate(w) {
   return "red";
 }
 
-/* ---------- RENDER MAIN TABLE (GROUPED) ---------- */
+/* ============================================================
+   RENDER MAIN TABLE (GROUPED BY ENEMY LEAD)
+   ============================================================ */
 
 function render() {
   const search = searchInput.value.toLowerCase();
@@ -215,7 +241,7 @@ function render() {
     });
   });
 
-  /* ----- AUTO-EXPAND WHEN FILTERED ----- */
+  /* ----- AUTO-EXPAND WHEN FILTERED TO SINGLE GROUP ----- */
   const headers = document.querySelectorAll(".group-header");
 
   if (headers.length === 1) {
@@ -253,7 +279,9 @@ function render() {
   renderPagination(filtered.length);
 }
 
-/* ---------- PAGINATION ---------- */
+/* ============================================================
+   PAGINATION
+   ============================================================ */
 
 function renderPagination(totalItems) {
   const pagination = document.getElementById("pagination");
@@ -276,7 +304,9 @@ function renderPagination(totalItems) {
   }
 }
 
-/* ---------- SUMMARY (GL COUNTERS) ---------- */
+/* ============================================================
+   SUMMARY (GL COUNTERS)
+   ============================================================ */
 
 function updateSummary() {
   const fullList = enrichMatchups(matchups);
@@ -290,7 +320,6 @@ function updateSummary() {
     "Jabba",
     "Leia Organa",
     "Lord Vader",
-    "Pirate King Hondo Ohnaka",
     "Sith Eternal Emperor"
   ];
 
@@ -311,7 +340,9 @@ function updateSummary() {
   if (glContainer) glContainer.innerHTML = glHTML;
 }
 
-/* ---------- DETAIL PANEL ---------- */
+/* ============================================================
+   DETAIL PANEL
+   ============================================================ */
 
 function showDetail(m) {
   detailPanel.innerHTML = `
@@ -324,7 +355,9 @@ function showDetail(m) {
   `;
 }
 
-/* ---------- TOOLTIP ---------- */
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
 
 function showTooltip(m, x, y) {
   tooltip.innerHTML = `
@@ -343,7 +376,9 @@ function hideTooltip() {
   tooltip.style.transform = "translateY(-6px)";
 }
 
-/* ---------- FILTERING ---------- */
+/* ============================================================
+   FILTERING
+   ============================================================ */
 
 function filterForGL(glName) {
   filterEnemyOnly = true;
@@ -366,22 +401,30 @@ function resetFilters() {
   render();
 }
 
-/* ---------- AUTOCOMPLETE ---------- */
+/* ============================================================
+   AUTOCOMPLETE
+   ============================================================ */
 
 function updateAutocomplete() {
   const text = searchInput.value.toLowerCase();
 
-  if (!text) return (autocompleteList.style.display = "none");
+  if (!text) {
+    autocompleteList.style.display = "none";
+    return;
+  }
 
   const suggestions = [...new Set(
     matchups
       .flatMap(m =>
-        filterEnemyOnly ? [m.enemyLead] : [m.enemyLead, m.myLead]
+        filterEnemyOnly ? [m.enemyLead] : [m.enemyLead]
       )
       .filter(name => name.toLowerCase().includes(text))
   )].slice(0, 10);
 
-  if (!suggestions.length) return (autocompleteList.style.display = "none");
+  if (!suggestions.length) {
+    autocompleteList.style.display = "none";
+    return;
+  }
 
   autocompleteList.innerHTML = suggestions
     .map(s => `<div class="autocomplete-item" data-value="${s}">${s}</div>`)
@@ -390,7 +433,9 @@ function updateAutocomplete() {
   autocompleteList.style.display = "block";
 }
 
-/* ---------- EVENT LISTENERS ---------- */
+/* ============================================================
+   EVENT LISTENERS – FILTERS, AUTOCOMPLETE
+   ============================================================ */
 
 searchInput.addEventListener("input", () => {
   filterEnemyOnly = false;
@@ -402,7 +447,7 @@ searchInput.addEventListener("input", () => {
 autocompleteList.addEventListener("click", e => {
   if (e.target.classList.contains("autocomplete-item")) {
     searchInput.value = e.target.dataset.value;
-    filterEnemyOnly = false;
+    filterEnemyOnly = true;
     currentPage = 1;
     render();
     autocompleteList.style.display = "none";
@@ -430,7 +475,9 @@ document.addEventListener("click", e => {
   }
 });
 
-/* ---------- SORTING ICONS ---------- */
+/* ============================================================
+   SORTING ICONS
+   ============================================================ */
 
 function setupSortingIcons() {
   const headers = document.querySelectorAll("th");
@@ -478,7 +525,9 @@ function updateSortIcons() {
   });
 }
 
-/* ---------- ANALYTICS RENDER (PLACEHOLDER) ---------- */
+/* ============================================================
+   ANALYTICS RENDER (PLACEHOLDER)
+   ============================================================ */
 
 function renderAnalytics() {
   // Tady budeme postupně doplňovat:
@@ -488,6 +537,4 @@ function renderAnalytics() {
   // - weak spots
   // - top counters
   // - faction performance
-  //
-  // Zatím necháme placeholdery v HTML.
 }
