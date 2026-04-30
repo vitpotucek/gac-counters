@@ -42,7 +42,7 @@ header {
    ============================================================ */
 
 .app-layout {
-  position: relative; /* FIX: content centered */
+  position: relative; /* content centered */
   min-height: calc(100vh - 80px);
 }
 
@@ -66,10 +66,9 @@ header {
 }
 
 .main-content {
-  flex: 1;
   padding: 20px;
   max-width: 1200px;
-  margin: 0 auto; /* FIX: center content */
+  margin: 0 auto; /* center content */
   box-sizing: border-box;
 }
 
@@ -112,6 +111,21 @@ header {
   background: #3498db;
   border-color: #3498db;
   font-weight: bold;
+}
+
+/* ============================================================
+   PAGE TRANSITION ANIMATION
+   ============================================================ */
+
+.fade-section {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.fade-section.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ============================================================
