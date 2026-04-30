@@ -42,7 +42,7 @@ header {
    ============================================================ */
 
 .app-layout {
-  position: relative; /* content centered */
+  position: relative; /* content centered + layered sections */
   min-height: calc(100vh - 80px);
 }
 
@@ -70,6 +70,19 @@ header {
   max-width: 1200px;
   margin: 0 auto; /* center content */
   box-sizing: border-box;
+  position: relative; /* needed for layered sections */
+}
+
+/* ============================================================
+   LAYERED SECTIONS (fix for analytics jumping down)
+   ============================================================ */
+
+#countersSection,
+#analyticsSection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 /* ============================================================
@@ -121,11 +134,13 @@ header {
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
 }
 
 .fade-section.visible {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 /* ============================================================
