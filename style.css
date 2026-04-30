@@ -10,6 +10,11 @@ body {
   color: #e0e3eb;
 }
 
+h1, h2, h3 {
+  margin: 0 0 10px;
+  color: #ffffff;
+}
+
 header {
   background: #151824;
   padding: 20px;
@@ -17,10 +22,6 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-h1 {
-  margin: 0;
 }
 
 /* ============================================================
@@ -79,6 +80,7 @@ h1 {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* ============================================================
@@ -123,7 +125,449 @@ h1 {
 }
 
 /* ============================================================
-   (Zbytek stylů zůstává stejný jako v předchozí verzi)
+   FILTER BAR
    ============================================================ */
 
-/* ... (GL tiles, table, grouping, analytics grid, badges, pagination, tooltip, atd.) ... */
+.controls {
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 4px;
+}
+
+input, select {
+  height: 36px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #3a3f55;
+  background: #0f111a;
+  color: #fff;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:hover, select:hover {
+  border-color: #4a5270;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #6b78a8;
+  box-shadow: 0 0 4px rgba(107,120,168,0.5);
+}
+
+/* ============================================================
+   SEARCH WRAPPER
+   ============================================================ */
+
+.search-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.search-wrapper input {
+  padding-right: 36px;
+}
+
+.reset-icon {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  user-select: none;
+}
+
+.reset-icon:hover {
+  opacity: 1;
+}
+
+/* ============================================================
+   SUMMARY + CARDS
+   ============================================================ */
+
+.summary {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.card {
+  background: #151824;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #272b3a;
+  flex: 1;
+  min-width: 250px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+
+.table-section {
+  margin-top: 30px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #151824;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #272b3a;
+}
+
+th {
+  background: #1d2233;
+  text-align: left;
+  cursor: pointer;
+}
+
+tr {
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+tr:hover {
+  background: #242b40;
+  transform: translateX(4px);
+  cursor: pointer;
+}
+
+/* ============================================================
+   GROUPED TABLE
+   ============================================================ */
+
+.group-header {
+  background: #1d2233;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  border-bottom: 1px solid #272b3a;
+  transition: background 0.2s ease;
+}
+
+.group-header:hover {
+  background: #242b40;
+}
+
+.group-header td {
+  padding: 12px;
+}
+
+.group-arrow {
+  margin-right: 8px;
+  display: inline-block;
+  width: 16px;
+}
+
+.group-info {
+  opacity: 0.7;
+  margin-left: 6px;
+  font-size: 13px;
+}
+
+.group-row {
+  background: #151824;
+}
+
+.group-row td {
+  padding-left: 32px;
+}
+
+/* ============================================================
+   GROUP COLOR HIGHLIGHT
+   ============================================================ */
+
+.group-color-green {
+  border-left: 6px solid #2ecc71;
+}
+
+.group-color-blue {
+  border-left: 6px solid #3498db;
+}
+
+.group-color-yellow {
+  border-left: 6px solid #f1c40f;
+}
+
+.group-color-red {
+  border-left: 6px solid #e74c3c;
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+
+.badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  color: #fff;
+  transition: transform 0.15s ease;
+}
+
+.badge:hover {
+  transform: scale(1.08);
+}
+
+.badge-S { background: #2ecc71; }
+.badge-A { background: #3498db; }
+.badge-B { background: #f1c40f; color: #000; }
+.badge-C { background: #e74c3c; }
+
+/* ============================================================
+   DETAIL PANEL
+   ============================================================ */
+
+.detail-section {
+  margin-top: 30px;
+  background: #151824;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #272b3a;
+  animation: fadeIn 0.25s ease;
+}
+
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+
+.pagination {
+  margin-top: 15px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  padding: 6px 12px;
+  background: #1d2233;
+  border: 1px solid #272b3a;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #e0e3eb;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.page-btn:hover {
+  background: #2a3147;
+  transform: translateY(-2px);
+}
+
+.page-btn.active {
+  background: #3498db;
+  border-color: #3498db;
+  font-weight: bold;
+}
+
+/* ============================================================
+   AUTOCOMPLETE
+   ============================================================ */
+
+.autocomplete-list {
+  position: absolute;
+  background: #1d2233;
+  border: 1px solid #2c3145;
+  border-radius: 4px;
+  margin-top: 2px;
+  width: 260px;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+  z-index: 50;
+}
+
+.autocomplete-item {
+  padding: 6px 10px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.autocomplete-item:hover {
+  background: #2a3147;
+}
+
+/* ============================================================
+   COLLAPSIBLE
+   ============================================================ */
+
+.collapsible-card {
+  overflow: hidden;
+}
+
+.collapsible-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.collapse-icon {
+  transition: transform 0.2s ease;
+}
+
+.collapsible-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+.collapsible-card.open .collapsible-content {
+  max-height: 1000px;
+}
+
+.collapsible-card.open .collapse-icon {
+  transform: rotate(90deg);
+}
+
+/* ============================================================
+   GL TILE
+   ============================================================ */
+
+.gl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.gl-tile {
+  position: relative;
+  height: 120px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.gl-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  transition: background 0.2s ease;
+}
+
+.gl-tile:hover {
+  transform: scale(1.02);
+}
+
+.gl-tile:hover::after {
+  background: rgba(0,0,0,0.6);
+}
+
+.gl-title {
+  position: relative;
+  z-index: 2;
+  font-size: 18px;
+}
+
+/* ============================================================
+   GL OBRÁZKY
+   ============================================================ */
+
+.gl-Ahsoka-Tano { background-image: url("img/gl/ahsoka.jpg"); }
+.gl-Rey { background-image: url("img/gl/rey.jpg"); }
+.gl-Supreme-Leader-Kylo-Ren { background-image: url("img/gl/slkr.jpg"); }
+.gl-Jedi-Master-Luke-Skywalker { background-image: url("img/gl/jml.jpg"); }
+.gl-Jedi-Master-Kenobi { background-image: url("img/gl/jmk.jpeg"); }
+.gl-Jabba { background-image: url("img/gl/jabba.jpg"); }
+.gl-Leia-Organa { background-image: url("img/gl/leia.jpeg"); }
+.gl-Lord-Vader { background-image: url("img/gl/lv.jpg"); }
+.gl-Sith-Eternal-Emperor { background-image: url("img/gl/see.jpg"); }
+
+/* ============================================================
+   ANALYTICS SECTION
+   ============================================================ */
+
+.analytics-section {
+  animation: fadeIn 0.25s ease;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.analytics-card {
+  min-height: 160px;
+}
+
+.analytics-placeholder {
+  font-size: 13px;
+  color: #b0b4c4;
+  opacity: 0.9;
+}
+
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+
+.tooltip {
+  position: absolute;
+  background: #1d2233;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #2c3145;
+  color: #fff;
+  font-size: 13px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 999;
+}
+
+/* ============================================================
+   ANIMACE
+   ============================================================ */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 20px;
+  color: #777;
+  border-top: 1px solid #272b3a;
+}
