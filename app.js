@@ -1,5 +1,5 @@
 /* ============================================================
-   GAC COUNTERS – GROUPED VERSION (VARIANTA A, AUTO-EXPAND)
+   GAC COUNTERS – GROUPED VERSION (VARIANTA A, AUTO-EXPAND + COLORS)
    ============================================================ */
 
 /* ---------- GLOBAL STATE ---------- */
@@ -90,6 +90,13 @@ function safeClassName(name) {
   return name.replace(/[^a-zA-Z0-9_-]/g, "-");
 }
 
+function colorClassForWinrate(w) {
+  if (w === 100) return "green";
+  if (w >= 80) return "blue";
+  if (w >= 50) return "yellow";
+  return "red";
+}
+
 /* ---------- RENDER MAIN TABLE (GROUPED) ---------- */
 
 function render() {
@@ -137,9 +144,10 @@ function render() {
     const bestWinrate = Math.max(...group.map(g => g.winrate));
     const count = group.length;
     const safe = safeClassName(enemy);
+    const colorClass = colorClassForWinrate(bestWinrate);
 
     html += `
-      <tr class="group-header" data-group="${enemy}">
+      <tr class="group-header group-color-${colorClass}" data-group="${enemy}">
         <td colspan="6">
           <span class="group-arrow">▶</span>
           <strong>${enemy}</strong>
