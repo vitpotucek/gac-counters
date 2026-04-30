@@ -25,7 +25,7 @@ header {
 }
 
 /* ============================================================
-   HAMBURGER BUTTON
+   HAMBURGER BUTTON (ALWAYS VISIBLE)
    ============================================================ */
 
 .hamburger {
@@ -34,13 +34,7 @@ header {
   border: none;
   color: #fff;
   cursor: pointer;
-  display: none;
-}
-
-@media (max-width: 900px) {
-  .hamburger {
-    display: block;
-  }
+  display: block;
 }
 
 /* ============================================================
@@ -61,10 +55,7 @@ header {
   transition: transform 0.3s ease;
 }
 
-.sidebar.collapsed {
-  transform: translateX(-240px);
-}
-
+/* MOBILE: sidebar hidden by default */
 @media (max-width: 900px) {
   .sidebar {
     position: fixed;
@@ -72,6 +63,10 @@ header {
     left: 0;
     height: calc(100vh - 80px);
     z-index: 200;
+    transform: translateX(-240px);
+  }
+  .sidebar.open {
+    transform: translateX(0);
   }
 }
 
