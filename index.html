@@ -10,87 +10,150 @@
 <body>
   <header>
     <h1>Vito's GAC counters DB</h1>
-
-    <div class="controls">
-
-      <div class="search-wrapper">
-        <label for="searchInput">Search:</label>
-        <input type="text" id="searchInput" placeholder="Enemy lead" />
-        <span id="resetFilterBtn" class="reset-icon" title="Reset filtru">⟲</span>
-
-        <div id="autocompleteList" class="autocomplete-list"></div>
-      </div>
-
-      <label>
-        Tier:
-        <select id="tierFilter">
-          <option value="">All</option>
-          <option value="S">S</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-        </select>
-      </label>
-
-      <label>
-        Typ:
-        <select id="typeFilter">
-          <option value="">All</option>
-          <option value="ground">Ground</option>
-          <option value="ship">Ship</option>
-          <option value="cleanup">Cleanup</option>
-        </select>
-      </label>
-
-    </div>
   </header>
 
-  <main>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div class="sidebar-title">Menu</div>
+        <button id="navCounters" class="nav-btn active">Counters</button>
+        <button id="navAnalytics" class="nav-btn">Analytics</button>
+      </nav>
+    </aside>
 
-    <!-- GL COUNTERS -->
-    <section class="summary">
-      <div class="card collapsible-card open">
-        <h2 class="collapsible-header">
-          GL counters
-          <span class="collapse-icon">▶</span>
-        </h2>
+    <main class="main-content">
 
-        <div class="collapsible-content">
-          <div id="glCounters" class="gl-grid"></div>
+      <!-- COUNTERS SECTION -->
+      <section id="countersSection">
+
+        <div class="controls">
+
+          <div class="search-wrapper">
+            <label for="searchInput">Search:</label>
+            <input type="text" id="searchInput" placeholder="Enemy lead, My lead,.." />
+            <span id="resetFilterBtn" class="reset-icon" title="Reset filtru">⟲</span>
+
+            <div id="autocompleteList" class="autocomplete-list"></div>
+          </div>
+
+          <label>
+            Tier:
+            <select id="tierFilter">
+              <option value="">All</option>
+              <option value="S">S</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+            </select>
+          </label>
+
+          <label>
+            Typ:
+            <select id="typeFilter">
+              <option value="">All</option>
+              <option value="ground">Ground</option>
+              <option value="ship">Ship</option>
+              <option value="cleanup">Cleanup</option>
+            </select>
+          </label>
+
         </div>
-      </div>
-    </section>
 
-    <!-- MATCHUPS TABLE -->
-    <section class="table-section">
-      <h2>Matchups</h2>
+        <section class="summary">
+          <div class="card collapsible-card open">
+            <h2 class="collapsible-header">
+              GL counters
+              <span class="collapse-icon">▶</span>
+            </h2>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Enemy lead</th>
-            <th>My lead</th>
-            <th>Winrate</th>
-            <th>Tier</th>
-            <th>Attempts</th>
-          </tr>
-        </thead>
-        <tbody id="matchupTableBody"></tbody>
-      </table>
+            <div class="collapsible-content">
+              <div id="glCounters" class="gl-grid"></div>
+            </div>
+          </div>
+        </section>
 
-      <div id="pagination" class="pagination"></div>
-    </section>
+        <section class="table-section">
+          <h2>Matchups</h2>
 
-    <!-- DETAIL PANEL -->
-    <section class="detail-section">
-      <h2>Counter detail</h2>
-      <div id="detailPanel">
-        <p>Choose a counter for detail</p>
-      </div>
-    </section>
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Enemy lead</th>
+                <th>My lead</th>
+                <th>Winrate</th>
+                <th>Tier</th>
+                <th>Attempts</th>
+              </tr>
+            </thead>
+            <tbody id="matchupTableBody"></tbody>
+          </table>
 
-  </main>
+          <div id="pagination" class="pagination"></div>
+        </section>
+
+        <section class="detail-section">
+          <h2>Counter detail</h2>
+          <div id="detailPanel">
+            <p>Choose a counter for detail</p>
+          </div>
+        </section>
+
+      </section>
+
+      <!-- ANALYTICS SECTION -->
+      <section id="analyticsSection" class="analytics-section" style="display:none;">
+        <h2>Analytics dashboard</h2>
+
+        <div class="analytics-grid">
+
+          <div class="card analytics-card" id="analyticsHeatmap">
+            <h3>Winrate heatmap (Enemy × My lead)</h3>
+            <div class="analytics-placeholder">
+              Heatmap placeholder – sem přidáme matici.
+            </div>
+          </div>
+
+          <div class="card analytics-card" id="analyticsTierDistribution">
+            <h3>Tier distribution</h3>
+            <div class="analytics-placeholder">
+              Pie chart placeholder – S/A/B/C rozložení.
+            </div>
+          </div>
+
+          <div class="card analytics-card" id="analyticsAttemptsWinrate">
+            <h3>Attempts vs Winrate</h3>
+            <div class="analytics-placeholder">
+              Scatter plot placeholder – spolehlivost counterů.
+            </div>
+          </div>
+
+          <div class="card analytics-card" id="analyticsWeakSpots">
+            <h3>Weak spots</h3>
+            <div class="analytics-placeholder">
+              Seznam slabých míst – málo counterů / nízký winrate.
+            </div>
+          </div>
+
+          <div class="card analytics-card" id="analyticsTopCounters">
+            <h3>Top reliable counters</h3>
+            <div class="analytics-placeholder">
+              Top 5 nejspolehlivějších counterů.
+            </div>
+          </div>
+
+          <div class="card analytics-card" id="analyticsFactionPerformance">
+            <h3>Faction performance</h3>
+            <div class="analytics-placeholder">
+              Výkon frakcí – Jedi, Sith, Rebels, Empire, atd.
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
 
   <footer>
     <small>Vito's GAC counters DB</small>
