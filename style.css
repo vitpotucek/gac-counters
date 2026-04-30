@@ -20,12 +20,12 @@ header {
   padding: 20px;
   border-bottom: 1px solid #272b3a;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 20px;
 }
 
 /* ============================================================
-   HAMBURGER BUTTON (ALWAYS VISIBLE)
+   HAMBURGER BUTTON (LEFT SIDE)
    ============================================================ */
 
 .hamburger {
@@ -53,9 +53,13 @@ header {
   padding: 20px 15px;
   box-sizing: border-box;
   transition: transform 0.3s ease;
+  transform: translateX(-240px); /* default collapsed */
 }
 
-/* MOBILE: sidebar hidden by default */
+.sidebar.open {
+  transform: translateX(0);
+}
+
 @media (max-width: 900px) {
   .sidebar {
     position: fixed;
@@ -63,10 +67,6 @@ header {
     left: 0;
     height: calc(100vh - 80px);
     z-index: 200;
-    transform: translateX(-240px);
-  }
-  .sidebar.open {
-    transform: translateX(0);
   }
 }
 
