@@ -42,7 +42,7 @@ header {
    ============================================================ */
 
 .app-layout {
-  display: flex;
+  position: relative; /* FIX: content centered */
   min-height: calc(100vh - 80px);
 }
 
@@ -54,27 +54,22 @@ header {
   box-sizing: border-box;
   transition: transform 0.3s ease;
   transform: translateX(-240px); /* default collapsed */
+  position: fixed;
+  top: 80px;
+  left: 0;
+  height: calc(100vh - 80px);
+  z-index: 200;
 }
 
 .sidebar.open {
   transform: translateX(0);
 }
 
-@media (max-width: 900px) {
-  .sidebar {
-    position: fixed;
-    top: 80px;
-    left: 0;
-    height: calc(100vh - 80px);
-    z-index: 200;
-  }
-}
-
 .main-content {
   flex: 1;
   padding: 20px;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto; /* FIX: center content */
   box-sizing: border-box;
 }
 
