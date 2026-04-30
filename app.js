@@ -530,8 +530,8 @@ function updateSortIcons() {
    ============================================================ */
 
 function renderAnalytics() {
-  // Tady budeme postupně doplňovat:
-  // - heatmapu
+  // Sem přijdou grafy:
+  // - heatmapa
   // - tier distribution
   // - attempts vs winrate
   // - weak spots
