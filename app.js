@@ -1,5 +1,5 @@
 /* ============================================================
-   GAC COUNTERS – GROUPED VERSION (VARIANTA A)
+   GAC COUNTERS – GROUPED VERSION (VARIANTA A, FIXED)
    ============================================================ */
 
 /* ---------- GLOBAL STATE ---------- */
@@ -52,7 +52,7 @@ function setupCollapsible() {
   header.addEventListener("click", () => card.classList.toggle("open"));
 }
 
-/* ---------- CALCULATIONS ---------- */
+/* ---------- HELPERS ---------- */
 
 function calcWinrate(m) {
   return m.attempts ? Math.round((m.wins / m.attempts) * 100) : 0;
@@ -77,8 +77,6 @@ function enrichMatchups(list) {
   });
 }
 
-/* ---------- GROUPING ---------- */
-
 function groupByEnemyLead(list) {
   const groups = {};
   list.forEach(m => {
@@ -86,6 +84,11 @@ function groupByEnemyLead(list) {
     groups[m.enemyLead].push(m);
   });
   return groups;
+}
+
+// převede enemyLead na bezpečný název pro CSS třídu
+function safeClassName(name) {
+  return name.replace(/[^a-zA-Z0-9_-]/g, "-");
 }
 
 /* ---------- RENDER MAIN TABLE (GROUPED) ---------- */
@@ -140,6 +143,7 @@ function render() {
     const group = groups[enemy];
     const bestWinrate = Math.max(...group.map(g => g.winrate));
     const count = group.length;
+    const safe = safeClassName(enemy);
 
     html += `
       <tr class="group-header" data-group="${enemy}">
@@ -153,7 +157,7 @@ function render() {
 
     group.forEach(m => {
       html += `
-        <tr class="group-row group-${enemy}" style="display:none;">
+        <tr class="group-row group-${safe}" style="display:none;">
           <td>${m.type}</td>
           <td>${m.enemyLead}</td>
           <td>${m.myLead}</td>
@@ -171,7 +175,8 @@ function render() {
   document.querySelectorAll(".group-header").forEach(header => {
     header.addEventListener("click", () => {
       const enemy = header.dataset.group;
-      const rows = document.querySelectorAll(`.group-${enemy}`);
+      const safe = safeClassName(enemy);
+      const rows = document.querySelectorAll(`.group-${safe}`);
       const arrow = header.querySelector(".group-arrow");
 
       const isOpen = arrow.textContent === "▼";
@@ -181,7 +186,7 @@ function render() {
     });
   });
 
-  /* ----- CLICK + TOOLTIP EVENTS FOR GROUP ROWS (FIX) ----- */
+  /* ----- CLICK + TOOLTIP EVENTS FOR GROUP ROWS ----- */
   document.querySelectorAll(".group-row").forEach(row => {
     const enemy = row.querySelector("td:nth-child(2)").textContent;
     const myLead = row.querySelector("td:nth-child(3)").textContent;
