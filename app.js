@@ -57,21 +57,23 @@ function setupSidebarToggle() {
 }
 
 function setupNav() {
-  if (!navCounters || !navAnalytics) return;
-
   navCounters.addEventListener("click", () => {
     navCounters.classList.add("active");
     navAnalytics.classList.remove("active");
-    countersSection.style.display = "block";
-    analyticsSection.style.display = "none";
+
+    countersSection.classList.add("visible");
+    analyticsSection.classList.remove("visible");
+
     sidebar.classList.remove("open");
   });
 
   navAnalytics.addEventListener("click", () => {
     navAnalytics.classList.add("active");
     navCounters.classList.remove("active");
-    countersSection.style.display = "none";
-    analyticsSection.style.display = "block";
+
+    analyticsSection.classList.add("visible");
+    countersSection.classList.remove("visible");
+
     sidebar.classList.remove("open");
     renderAnalytics();
   });
