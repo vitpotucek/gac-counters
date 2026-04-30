@@ -1,5 +1,5 @@
 /* ============================================================
-   GAC COUNTERS – CLEAN STATIC VERSION (FINAL WITH SORT + TOOLTIP)
+   GAC COUNTERS – GROUPED VERSION (VARIANTA A)
    ============================================================ */
 
 /* ---------- GLOBAL STATE ---------- */
@@ -9,7 +9,7 @@ let filterEnemyOnly = false;
 let currentPage = 1;
 
 let sortColumn = null;
-let sortDirection = 1; // 1 = asc, -1 = desc
+let sortDirection = 1;
 
 const ROWS_PER_PAGE = 10;
 
@@ -77,7 +77,18 @@ function enrichMatchups(list) {
   });
 }
 
-/* ---------- RENDER MAIN TABLE ---------- */
+/* ---------- GROUPING ---------- */
+
+function groupByEnemyLead(list) {
+  const groups = {};
+  list.forEach(m => {
+    if (!groups[m.enemyLead]) groups[m.enemyLead] = [];
+    groups[m.enemyLead].push(m);
+  });
+  return groups;
+}
+
+/* ---------- RENDER MAIN TABLE (GROUPED) ---------- */
 
 function render() {
   const search = searchInput.value.toLowerCase();
@@ -120,33 +131,54 @@ function render() {
   const start = (currentPage - 1) * ROWS_PER_PAGE;
   const pageItems = filtered.slice(start, start + ROWS_PER_PAGE);
 
-  /* ----- RENDER TABLE ----- */
-  tableBody.innerHTML = pageItems
-    .map(
-      m => `
-      <tr>
-        <td>${m.type}</td>
-        <td>${m.enemyLead}</td>
-        <td>${m.myLead}</td>
-        <td>${m.winrate}%</td>
-        <td><span class="badge badge-${m.tier}">${m.tier}</span></td>
-        <td>${m.wins}/${m.attempts}</td>
+  /* ----- GROUPING ----- */
+  const groups = groupByEnemyLead(pageItems);
+
+  let html = "";
+
+  Object.keys(groups).forEach(enemy => {
+    const group = groups[enemy];
+    const bestWinrate = Math.max(...group.map(g => g.winrate));
+    const count = group.length;
+
+    html += `
+      <tr class="group-header" data-group="${enemy}">
+        <td colspan="6">
+          <span class="group-arrow">▶</span>
+          <strong>${enemy}</strong>
+          <span class="group-info">(${count} counters, best ${bestWinrate}%)</span>
+        </td>
       </tr>
-    `
-    )
-    .join("");
+    `;
 
-  /* ----- ROW EVENTS (DETAIL + TOOLTIP) ----- */
-  tableBody.querySelectorAll("tr").forEach((tr, i) => {
-    const rowData = pageItems[i];
-
-    tr.addEventListener("click", () => showDetail(rowData));
-
-    tr.addEventListener("mousemove", e => {
-      showTooltip(rowData, e.pageX, e.pageY);
+    group.forEach(m => {
+      html += `
+        <tr class="group-row group-${enemy}" style="display:none;">
+          <td>${m.type}</td>
+          <td>${m.enemyLead}</td>
+          <td>${m.myLead}</td>
+          <td>${m.winrate}%</td>
+          <td><span class="badge badge-${m.tier}">${m.tier}</span></td>
+          <td>${m.wins}/${m.attempts}</td>
+        </tr>
+      `;
     });
+  });
 
-    tr.addEventListener("mouseleave", hideTooltip);
+  tableBody.innerHTML = html;
+
+  /* ----- CLICK EVENTS FOR GROUPS ----- */
+  document.querySelectorAll(".group-header").forEach(header => {
+    header.addEventListener("click", () => {
+      const enemy = header.dataset.group;
+      const rows = document.querySelectorAll(`.group-${enemy}`);
+      const arrow = header.querySelector(".group-arrow");
+
+      const isOpen = arrow.textContent === "▼";
+
+      rows.forEach(r => r.style.display = isOpen ? "none" : "table-row");
+      arrow.textContent = isOpen ? "▶" : "▼";
+    });
   });
 
   updateSummary();
@@ -329,7 +361,7 @@ document.addEventListener("click", e => {
   }
 });
 
-/* ---------- SORTING ICONS + CLICK HANDLERS ---------- */
+/* ---------- SORTING ICONS ---------- */
 
 function setupSortingIcons() {
   const headers = document.querySelectorAll("th");
