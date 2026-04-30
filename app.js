@@ -167,7 +167,7 @@ function render() {
 
   tableBody.innerHTML = html;
 
-  /* ----- CLICK EVENTS FOR GROUPS ----- */
+  /* ----- CLICK EVENTS FOR GROUP HEADERS ----- */
   document.querySelectorAll(".group-header").forEach(header => {
     header.addEventListener("click", () => {
       const enemy = header.dataset.group;
@@ -179,6 +179,26 @@ function render() {
       rows.forEach(r => r.style.display = isOpen ? "none" : "table-row");
       arrow.textContent = isOpen ? "▶" : "▼";
     });
+  });
+
+  /* ----- CLICK + TOOLTIP EVENTS FOR GROUP ROWS (FIX) ----- */
+  document.querySelectorAll(".group-row").forEach(row => {
+    const enemy = row.querySelector("td:nth-child(2)").textContent;
+    const myLead = row.querySelector("td:nth-child(3)").textContent;
+
+    const rowData = filtered.find(
+      m => m.enemyLead === enemy && m.myLead === myLead
+    );
+
+    if (!rowData) return;
+
+    row.addEventListener("click", () => showDetail(rowData));
+
+    row.addEventListener("mousemove", e => {
+      showTooltip(rowData, e.pageX, e.pageY);
+    });
+
+    row.addEventListener("mouseleave", hideTooltip);
   });
 
   updateSummary();
