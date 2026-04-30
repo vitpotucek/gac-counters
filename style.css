@@ -223,6 +223,27 @@ tr:hover {
 
 
 /* ============================================================
+   GROUP COLOR HIGHLIGHT
+   ============================================================ */
+
+.group-color-green {
+  border-left: 6px solid #2ecc71;
+}
+
+.group-color-blue {
+  border-left: 6px solid #3498db;
+}
+
+.group-color-yellow {
+  border-left: 6px solid #f1c40f;
+}
+
+.group-color-red {
+  border-left: 6px solid #e74c3c;
+}
+
+
+/* ============================================================
    BADGES
    ============================================================ */
 
