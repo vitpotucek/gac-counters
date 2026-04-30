@@ -52,7 +52,7 @@ function setupSidebarToggle() {
   if (!menuToggle || !sidebar) return;
 
   menuToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("collapsed");
+    sidebar.classList.toggle("open");
   });
 }
 
@@ -64,7 +64,7 @@ function setupNav() {
     navAnalytics.classList.remove("active");
     countersSection.style.display = "block";
     analyticsSection.style.display = "none";
-    sidebar.classList.add("collapsed"); // auto-close on mobile
+    sidebar.classList.remove("open");
   });
 
   navAnalytics.addEventListener("click", () => {
@@ -72,7 +72,7 @@ function setupNav() {
     navCounters.classList.remove("active");
     countersSection.style.display = "none";
     analyticsSection.style.display = "block";
-    sidebar.classList.add("collapsed"); // auto-close on mobile
+    sidebar.classList.remove("open");
     renderAnalytics();
   });
 }
