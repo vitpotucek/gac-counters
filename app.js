@@ -86,7 +86,6 @@ function groupByEnemyLead(list) {
   return groups;
 }
 
-// bezpečný název pro CSS třídu
 function safeClassName(name) {
   return name.replace(/[^a-zA-Z0-9_-]/g, "-");
 }
@@ -113,16 +112,10 @@ function render() {
     });
   }
 
-  /* ----- SEARCH ----- */
+  /* ----- SEARCH (ONLY ENEMY LEAD) ----- */
   if (search) {
     filtered = filtered.filter(m =>
-      filterEnemyOnly
-        ? m.enemyLead.toLowerCase().includes(search)
-        : (
-            m.enemyLead.toLowerCase().includes(search) ||
-            m.myLead.toLowerCase().includes(search) ||
-            (m.notes && m.notes.toLowerCase().includes(search))
-          )
+      m.enemyLead.toLowerCase().includes(search)
     );
   }
 
