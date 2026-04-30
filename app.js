@@ -1,5 +1,5 @@
 /* ============================================================
-   GAC COUNTERS – GROUPED VERSION (VARIANTA A, AUTO-EXPAND + COLORS)
+   GAC COUNTERS – COUNTERS VIEW + ANALYTICS VIEW (SIDEBAR)
    ============================================================ */
 
 /* ---------- GLOBAL STATE ---------- */
@@ -25,13 +25,39 @@ const typeFilter = document.getElementById("typeFilter");
 const autocompleteList = document.getElementById("autocompleteList");
 const tooltip = document.getElementById("tooltip");
 
+const countersSection = document.getElementById("countersSection");
+const analyticsSection = document.getElementById("analyticsSection");
+
+const navCounters = document.getElementById("navCounters");
+const navAnalytics = document.getElementById("navAnalytics");
+
 /* ---------- INITIALIZATION ---------- */
 
 document.addEventListener("DOMContentLoaded", () => {
   setupCollapsible();
+  setupNav();
   loadJSON();
   setupSortingIcons();
 });
+
+/* ---------- NAVIGATION ---------- */
+
+function setupNav() {
+  navCounters.addEventListener("click", () => {
+    navCounters.classList.add("active");
+    navAnalytics.classList.remove("active");
+    countersSection.style.display = "block";
+    analyticsSection.style.display = "none";
+  });
+
+  navAnalytics.addEventListener("click", () => {
+    navAnalytics.classList.add("active");
+    navCounters.classList.remove("active");
+    countersSection.style.display = "none";
+    analyticsSection.style.display = "block";
+    renderAnalytics();
+  });
+}
 
 /* ---------- LOAD DATA ---------- */
 
@@ -47,6 +73,8 @@ async function loadJSON() {
 function setupCollapsible() {
   const card = document.querySelector(".collapsible-card");
   const header = document.querySelector(".collapsible-header");
+
+  if (!card || !header) return;
 
   card.classList.add("open");
   header.addEventListener("click", () => card.classList.toggle("open"));
@@ -279,7 +307,8 @@ function updateSummary() {
     })
     .join("");
 
-  document.getElementById("glCounters").innerHTML = glHTML;
+  const glContainer = document.getElementById("glCounters");
+  if (glContainer) glContainer.innerHTML = glHTML;
 }
 
 /* ---------- DETAIL PANEL ---------- */
@@ -447,4 +476,18 @@ function updateSortIcons() {
       icon.textContent = "↕";
     }
   });
+}
+
+/* ---------- ANALYTICS RENDER (PLACEHOLDER) ---------- */
+
+function renderAnalytics() {
+  // Tady budeme postupně doplňovat:
+  // - heatmapu
+  // - tier distribution
+  // - attempts vs winrate
+  // - weak spots
+  // - top counters
+  // - faction performance
+  //
+  // Zatím necháme placeholdery v HTML.
 }
