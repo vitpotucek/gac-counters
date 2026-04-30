@@ -1,5 +1,5 @@
 /* ============================================================
-   GAC COUNTERS – GROUPED VERSION (VARIANTA A, FIXED)
+   GAC COUNTERS – GROUPED VERSION (VARIANTA A, AUTO-EXPAND)
    ============================================================ */
 
 /* ---------- GLOBAL STATE ---------- */
@@ -86,7 +86,7 @@ function groupByEnemyLead(list) {
   return groups;
 }
 
-// převede enemyLead na bezpečný název pro CSS třídu
+// bezpečný název pro CSS třídu
 function safeClassName(name) {
   return name.replace(/[^a-zA-Z0-9_-]/g, "-");
 }
@@ -185,6 +185,20 @@ function render() {
       arrow.textContent = isOpen ? "▶" : "▼";
     });
   });
+
+  /* ----- AUTO-EXPAND WHEN FILTERED ----- */
+  const headers = document.querySelectorAll(".group-header");
+
+  if (headers.length === 1) {
+    const header = headers[0];
+    const enemy = header.dataset.group;
+    const safe = safeClassName(enemy);
+    const rows = document.querySelectorAll(`.group-${safe}`);
+    const arrow = header.querySelector(".group-arrow");
+
+    rows.forEach(r => r.style.display = "table-row");
+    arrow.textContent = "▼";
+  }
 
   /* ----- CLICK + TOOLTIP EVENTS FOR GROUP ROWS ----- */
   document.querySelectorAll(".group-row").forEach(row => {
