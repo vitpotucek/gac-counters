@@ -1,142 +1,150 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Vito's GAC counters DB</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <header>
-    <button id="menuToggle" class="hamburger">☰</button>
-    <h1>Vito's GAC counters DB</h1>
-  </header>
 
-  <div class="app-layout">
+<header>
+  <button id="menuToggle" class="hamburger">☰</button>
+  <h1>Vito's GAC counters DB</h1>
+</header>
 
-    <!-- SIDEBAR (overlay, default collapsed) -->
-    <aside id="sidebar" class="sidebar collapsed">
-      <nav class="sidebar-nav">
-        <div class="sidebar-title">Menu</div>
-        <button id="navCounters" class="nav-btn active">Counters</button>
-        <button id="navAnalytics" class="nav-btn">Analytics</button>
-      </nav>
-    </aside>
+<div class="app-layout">
 
-    <main class="main-content">
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-title">Navigace</div>
+    <div class="sidebar-nav">
+      <button id="navCounters" class="nav-btn active">Counters</button>
+      <button id="navAnalytics" class="nav-btn">Analytics</button>
+    </div>
+  </aside>
 
-      <!-- COUNTERS SECTION -->
-      <section id="countersSection" class="fade-section visible">
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
 
-        <div class="controls">
+    <!-- COUNTERS SECTION -->
+    <section id="countersSection" class="fade-section visible">
 
+      <h2>Counters</h2>
+
+      <!-- FILTERS -->
+      <div class="controls">
+
+        <label>
+          Vyhledat (Enemy lead)
           <div class="search-wrapper">
-            <label for="searchInput">Search:</label>
-            <input type="text" id="searchInput" placeholder="Enemy lead..." />
-            <span id="resetFilterBtn" class="reset-icon" title="Reset filtru">⟲</span>
-
+            <input id="searchInput" type="text" placeholder="např. Darth Revan">
+            <span id="resetFilterBtn" class="reset-icon">✕</span>
             <div id="autocompleteList" class="autocomplete-list"></div>
           </div>
+        </label>
 
-          <label>
-            Tier:
-            <select id="tierFilter">
-              <option value="">All</option>
-              <option value="S">S</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-            </select>
-          </label>
+        <label>
+          Tier
+          <select id="tierFilter">
+            <option value="">Vše</option>
+            <option value="S">S</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+          </select>
+        </label>
 
-          <label>
-            Typ:
-            <select id="typeFilter">
-              <option value="">All</option>
-              <option value="ground">Ground</option>
-              <option value="ship">Ship</option>
-              <option value="cleanup">Cleanup</option>
-            </select>
-          </label>
+        <label>
+          Typ
+          <select id="typeFilter">
+            <option value="">Vše</option>
+            <option value="Offense">Offense</option>
+            <option value="Defense">Defense</option>
+          </select>
+        </label>
 
+      </div>
+
+      <!-- GL SUMMARY -->
+      <div class="summary">
+        <div class="card">
+          <h3>GL Counters</h3>
+          <div id="glCounters" class="gl-grid"></div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-section">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Enemy Lead</th>
+              <th>My Lead</th>
+              <th>Winrate</th>
+              <th>Tier</th>
+              <th>Attempts</th>
+            </tr>
+          </thead>
+          <tbody id="matchupTableBody"></tbody>
+        </table>
+
+        <div id="pagination" class="pagination"></div>
+      </div>
+
+      <!-- DETAIL PANEL -->
+      <div id="detailPanel" class="detail-section"></div>
+
+    </section>
+
+    <!-- ANALYTICS SECTION -->
+    <section id="analyticsSection" class="fade-section">
+
+      <h2>Analytics dashboard</h2>
+
+      <div class="analytics-grid">
+
+        <!-- HEATMAP CARD -->
+        <div class="analytics-card">
+          <h3>Heatmap</h3>
+          <div class="analytics-placeholder">
+            Klikni pro otevření fullscreen heatmapy
+          </div>
         </div>
 
-        <section class="summary">
-          <div class="card collapsible-card open">
-            <h2 class="collapsible-header">
-              GL counters
-              <span class="collapse-icon">▶</span>
-            </h2>
-
-            <div class="collapsible-content">
-              <div id="glCounters" class="gl-grid"></div>
-            </div>
-          </div>
-        </section>
-
-        <section class="table-section">
-          <h2>Matchups</h2>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Enemy lead</th>
-                <th>My lead</th>
-                <th>Winrate</th>
-                <th>Tier</th>
-                <th>Attempts</th>
-              </tr>
-            </thead>
-            <tbody id="matchupTableBody"></tbody>
-          </table>
-
-          <div id="pagination" class="pagination"></div>
-        </section>
-
-        <section class="detail-section">
-          <h2>Counter detail</h2>
-          <div id="detailPanel">
-            <p>Choose a counter for detail</p>
-          </div>
-        </section>
-
-      </section>
-
-      <!-- ANALYTICS SECTION -->
-      <section id="analyticsSection" class="analytics-section fade-section">
-        <h2>Analytics dashboard</h2>
-
-        <div class="analytics-grid">
-
-          <div class="card analytics-card">
-            <h3>Heatmap</h3>
-            <div class="analytics-placeholder">Heatmap placeholder</div>
-          </div>
-
-          <div class="card analytics-card">
-            <h3>Tier distribution</h3>
-            <div class="analytics-placeholder">Pie chart placeholder</div>
-          </div>
-
-          <div class="card analytics-card">
-            <h3>Attempts vs Winrate</h3>
-            <div class="analytics-placeholder">Scatter plot placeholder</div>
-          </div>
-
+        <!-- PIE CHART -->
+        <div class="analytics-card">
+          <h3>Tier distribution</h3>
+          <div class="analytics-placeholder">Pie chart placeholder</div>
         </div>
-      </section>
 
-    </main>
+        <!-- SCATTER -->
+        <div class="analytics-card">
+          <h3>Attempts vs Winrate</h3>
+          <div class="analytics-placeholder">Scatter plot placeholder</div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- FULLSCREEN HEATMAP MODAL -->
+<div id="heatmapModal" class="heatmap-modal">
+  <div class="heatmap-modal-content">
+    <button id="closeHeatmap" class="heatmap-close">✕</button>
+    <h2>Heatmap – Fullscreen</h2>
+    <div id="heatmapModalContainer"></div>
   </div>
+</div>
 
-  <footer>
-    <small>Vito's GAC counters DB</small>
-  </footer>
+<!-- TOOLTIP -->
+<div id="tooltip" class="tooltip"></div>
 
-  <div id="tooltip" class="tooltip"></div>
+<script src="app.js"></script>
 
-  <script src="app.js"></script>
 </body>
 </html>
