@@ -454,39 +454,6 @@ tr:hover {
 }
 
 /* ============================================================
-   COLLAPSIBLE
-   ============================================================ */
-
-.collapsible-card {
-  overflow: hidden;
-}
-
-.collapsible-header {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.collapse-icon {
-  transition: transform 0.2s ease;
-}
-
-.collapsible-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.25s ease;
-}
-
-.collapsible-card.open .collapsible-content {
-  max-height: 1000px;
-}
-
-.collapsible-card.open .collapse-icon {
-  transform: rotate(90deg);
-}
-
-/* ============================================================
    GL TILE
    ============================================================ */
 
@@ -542,26 +509,8 @@ tr:hover {
 }
 
 /* ============================================================
-   GL OBRÁZKY
+   ANALYTICS TILES
    ============================================================ */
-
-.gl-Ahsoka-Tano { background-image: url("img/gl/ahsoka.jpg"); }
-.gl-Rey { background-image: url("img/gl/rey.jpg"); }
-.gl-Supreme-Leader-Kylo-Ren { background-image: url("img/gl/slkr.jpg"); }
-.gl-Jedi-Master-Luke-Skywalker { background-image: url("img/gl/jml.jpg"); }
-.gl-Jedi-Master-Kenobi { background-image: url("img/gl/jmk.jpeg"); }
-.gl-Jabba { background-image: url("img/gl/jabba.jpg"); }
-.gl-Leia-Organa { background-image: url("img/gl/leia.jpeg"); }
-.gl-Lord-Vader { background-image: url("img/gl/lv.jpg"); }
-.gl-Sith-Eternal-Emperor { background-image: url("img/gl/see.jpg"); }
-
-/* ============================================================
-   ANALYTICS SECTION
-   ============================================================ */
-
-.analytics-section {
-  animation: fadeIn 0.25s ease;
-}
 
 .analytics-grid {
   display: grid;
@@ -575,10 +524,6 @@ tr:hover {
     grid-template-columns: 1fr;
   }
 }
-
-/* ============================================================
-   ANALYTICS TILES (VARIANTA A)
-   ============================================================ */
 
 .analytics-tile {
   background: #151824;
@@ -676,14 +621,21 @@ tr:hover {
 }
 
 /* ============================================================
-   HEATMAP (GRID)
+   FULLSCREEN HEATMAP
    ============================================================ */
+
+#heatmapModalContainer {
+  overflow: auto;
+  max-height: 100%;
+  max-width: 100%;
+}
 
 .heatmap {
   display: grid;
   border: 1px solid #272b3a;
   border-radius: 6px;
-  overflow: hidden;
+  overflow: auto;
+  min-width: max-content;
 }
 
 .heatmap-header {
@@ -694,6 +646,17 @@ tr:hover {
   text-align: center;
   border-bottom: 1px solid #272b3a;
   border-right: 1px solid #272b3a;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.heatmap-header:first-child,
+.heatmap-cell:first-child {
+  position: sticky;
+  left: 0;
+  background: #1d2233;
+  z-index: 11;
 }
 
 .heatmap-cell {
@@ -706,11 +669,11 @@ tr:hover {
 
 .heatmap-cell:hover {
   outline: 1px solid #fff;
-  z-index: 2;
+  z-index: 12;
 }
 
 /* ============================================================
-   FULLSCREEN HEATMAP MODAL
+   FULLSCREEN MODAL
    ============================================================ */
 
 .heatmap-modal {
@@ -733,4 +696,54 @@ tr:hover {
   padding: 20px;
   border-radius: 10px;
   width: 90%;
-  height: 85
+  height: 85%;
+  overflow: auto;
+  border: 1px solid #272b3a;
+  animation: fadeIn 0.25s ease;
+}
+
+.heatmap-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  float: right;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.heatmap-close:hover {
+  opacity: 1;
+}
+
+/* ============================================================
+   TOOLTIP (opraveno)
+   ============================================================ */
+
+.tooltip {
+  position: fixed;
+  background: #1d2233;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #2c3145;
+  color: #fff;
+  font-size: 13px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 999999;
+}
+
+@media (max-width: 600px) {
+  .tooltip {
+    max-width: 200px;
+    font-size: 11px;
+  }
+}
+
+/* ============================================================
+   ANIMACE
+   ============================================================ */
+
+@keyframes fadeIn {
