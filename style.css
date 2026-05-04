@@ -15,6 +15,10 @@ h1, h2, h3 {
   color: #ffffff;
 }
 
+/* ============================================================
+   HEADER + HAMBURGER
+   ============================================================ */
+
 header {
   background: #151824;
   padding: 20px;
@@ -24,21 +28,16 @@ header {
   gap: 20px;
 }
 
-/* ============================================================
-   HAMBURGER BUTTON
-   ============================================================ */
-
 .hamburger {
   font-size: 26px;
   background: none;
   border: none;
   color: #fff;
   cursor: pointer;
-  display: block;
 }
 
 /* ============================================================
-   LAYOUT – SIDEBAR + MAIN
+   SIDEBAR + MAIN LAYOUT
    ============================================================ */
 
 .app-layout {
@@ -74,40 +73,23 @@ header {
 }
 
 /* ============================================================
-   RESPONSIVE LAYOUT FIXES
+   RESPONSIVE
    ============================================================ */
 
 @media (max-width: 768px) {
   .sidebar {
     width: 180px;
   }
+}
 
+@media (max-width: 600px) {
   .main-content {
     padding: 10px;
   }
 }
 
-@media (max-width: 600px) {
-  .main-content {
-    padding: 8px;
-  }
-}
-
 /* ============================================================
-   LAYERED SECTIONS
-   ============================================================ */
-
-#countersSection,
-#analyticsSection {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding-top: 30px;
-}
-
-/* ============================================================
-   SIDEBAR NAV
+   NAVIGATION
    ============================================================ */
 
 .sidebar-title {
@@ -130,9 +112,7 @@ header {
   border: 1px solid #272b3a;
   border-radius: 4px;
   color: #e0e3eb;
-  text-align: left;
   cursor: pointer;
-  font-size: 14px;
   transition: background 0.2s ease, transform 0.15s ease;
 }
 
@@ -148,24 +128,7 @@ header {
 }
 
 /* ============================================================
-   PAGE TRANSITION
-   ============================================================ */
-
-.fade-section {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  pointer-events: none;
-}
-
-.fade-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-/* ============================================================
-   FILTER BAR
+   FILTERS
    ============================================================ */
 
 .controls {
@@ -190,22 +153,16 @@ input, select {
   border: 1px solid #3a3f55;
   background: #0f111a;
   color: #fff;
-  box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-input:hover, select:hover {
-  border-color: #4a5270;
-}
-
 input:focus, select:focus {
-  outline: none;
   border-color: #6b78a8;
   box-shadow: 0 0 4px rgba(107,120,168,0.5);
 }
 
 /* ============================================================
-   SEARCH WRAPPER
+   SEARCH + AUTOCOMPLETE
    ============================================================ */
 
 .search-wrapper {
@@ -215,49 +172,34 @@ input:focus, select:focus {
   gap: 4px;
 }
 
-.search-wrapper input {
-  padding-right: 36px;
-}
-
 .reset-icon {
   position: absolute;
   right: 10px;
   bottom: 10px;
   cursor: pointer;
-  font-size: 16px;
   opacity: 0.6;
-  transition: opacity 0.2s ease;
-  user-select: none;
 }
 
-.reset-icon:hover {
-  opacity: 1;
+.autocomplete-list {
+  position: absolute;
+  background: #1d2233;
+  border: 1px solid #2c3145;
+  border-radius: 4px;
+  margin-top: 2px;
+  width: 260px;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+  z-index: 50;
 }
 
-/* ============================================================
-   SUMMARY + CARDS
-   ============================================================ */
-
-.summary {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-top: 20px;
+.autocomplete-item {
+  padding: 6px 10px;
+  cursor: pointer;
 }
 
-.card {
-  background: #151824;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #272b3a;
-  flex: 1;
-  min-width: 250px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+.autocomplete-item:hover {
+  background: #2a3147;
 }
 
 /* ============================================================
@@ -285,18 +227,11 @@ th, td {
 
 th {
   background: #1d2233;
-  text-align: left;
   cursor: pointer;
-}
-
-tr {
-  transition: background 0.25s ease, transform 0.15s ease;
 }
 
 tr:hover {
   background: #242b40;
-  transform: translateX(4px);
-  cursor: pointer;
 }
 
 /* ============================================================
@@ -306,59 +241,17 @@ tr:hover {
 .group-header {
   background: #1d2233;
   cursor: pointer;
-  font-size: 15px;
   font-weight: bold;
-  border-bottom: 1px solid #272b3a;
-  transition: background 0.2s ease;
-}
-
-.group-header:hover {
-  background: #242b40;
-}
-
-.group-header td {
-  padding: 12px;
-}
-
-.group-arrow {
-  margin-right: 8px;
-  display: inline-block;
-  width: 16px;
-}
-
-.group-info {
-  opacity: 0.7;
-  margin-left: 6px;
-  font-size: 13px;
-}
-
-.group-row {
-  background: #151824;
 }
 
 .group-row td {
   padding-left: 32px;
 }
 
-/* ============================================================
-   GROUP COLOR HIGHLIGHT
-   ============================================================ */
-
-.group-color-green {
-  border-left: 6px solid #2ecc71;
-}
-
-.group-color-blue {
-  border-left: 6px solid #3498db;
-}
-
-.group-color-yellow {
-  border-left: 6px solid #f1c40f;
-}
-
-.group-color-red {
-  border-left: 6px solid #e74c3c;
-}
+.group-color-green { border-left: 6px solid #2ecc71; }
+.group-color-blue  { border-left: 6px solid #3498db; }
+.group-color-yellow{ border-left: 6px solid #f1c40f; }
+.group-color-red   { border-left: 6px solid #e74c3c; }
 
 /* ============================================================
    BADGES
@@ -368,12 +261,6 @@ tr:hover {
   padding: 3px 8px;
   border-radius: 4px;
   font-weight: bold;
-  color: #fff;
-  transition: transform 0.15s ease;
-}
-
-.badge:hover {
-  transform: scale(1.08);
 }
 
 .badge-S { background: #2ecc71; }
@@ -382,79 +269,7 @@ tr:hover {
 .badge-C { background: #e74c3c; }
 
 /* ============================================================
-   DETAIL PANEL
-   ============================================================ */
-
-.detail-section {
-  margin-top: 30px;
-  background: #151824;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #272b3a;
-  animation: fadeIn 0.25s ease;
-}
-
-/* ============================================================
-   PAGINATION
-   ============================================================ */
-
-.pagination {
-  margin-top: 15px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.page-btn {
-  padding: 6px 12px;
-  background: #1d2233;
-  border: 1px solid #272b3a;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #e0e3eb;
-  transition: background 0.2s ease, transform 0.15s ease;
-}
-
-.page-btn:hover {
-  background: #2a3147;
-  transform: translateY(-2px);
-}
-
-.page-btn.active {
-  background: #3498db;
-  border-color: #3498db;
-  font-weight: bold;
-}
-
-/* ============================================================
-   AUTOCOMPLETE
-   ============================================================ */
-
-.autocomplete-list {
-  position: absolute;
-  background: #1d2233;
-  border: 1px solid #2c3145;
-  border-radius: 4px;
-  margin-top: 2px;
-  width: 260px;
-  max-height: 200px;
-  overflow-y: auto;
-  display: none;
-  z-index: 50;
-}
-
-.autocomplete-item {
-  padding: 6px 10px;
-  cursor: pointer;
-  color: #fff;
-}
-
-.autocomplete-item:hover {
-  background: #2a3147;
-}
-
-/* ============================================================
-   GL TILE
+   GL GRID
    ============================================================ */
 
 .gl-grid {
@@ -462,12 +277,6 @@ tr:hover {
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 10px;
   margin-top: 10px;
-}
-
-@media (max-width: 600px) {
-  .gl-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
 }
 
 .gl-tile {
@@ -483,7 +292,6 @@ tr:hover {
   font-weight: bold;
   cursor: pointer;
   overflow: hidden;
-  transition: transform 0.2s ease;
 }
 
 .gl-tile::after {
@@ -491,21 +299,11 @@ tr:hover {
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.45);
-  transition: background 0.2s ease;
-}
-
-.gl-tile:hover {
-  transform: scale(1.02);
-}
-
-.gl-tile:hover::after {
-  background: rgba(0,0,0,0.6);
 }
 
 .gl-title {
   position: relative;
   z-index: 2;
-  font-size: 18px;
 }
 
 /* ============================================================
@@ -519,105 +317,13 @@ tr:hover {
   margin-top: 20px;
 }
 
-@media (max-width: 600px) {
-  .analytics-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .analytics-tile {
   background: #151824;
   border: 1px solid #272b3a;
   border-radius: 10px;
   padding: 20px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   text-align: center;
-}
-
-.analytics-tile:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
-}
-
-.tile-icon {
-  font-size: 40px;
-  margin-bottom: 10px;
-}
-
-.tile-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-
-.tile-preview {
-  width: 100%;
-  height: 100px;
-  border-radius: 6px;
-  background: #1d2233;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-/* Fake heatmap preview */
-.heatmap-preview {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
-}
-
-.heatmap-preview div {
-  width: 26px;
-  height: 26px;
-  border-radius: 3px;
-}
-
-/* Fake pie preview */
-.pie-preview {
-  position: relative;
-}
-
-.pie-preview::before {
-  content: "";
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: conic-gradient(
-    #2ecc71 0 40%,
-    #3498db 40% 70%,
-    #f1c40f 70% 90%,
-    #e74c3c 90% 100%
-  );
-}
-
-/* Fake scatter preview */
-.scatter-preview {
-  position: relative;
-}
-
-.scatter-preview::before {
-  content: "";
-  width: 100%;
-  height: 100%;
-  background-image:
-    radial-gradient(circle, #fff 3px, transparent 4px),
-    radial-gradient(circle, #fff 3px, transparent 4px),
-    radial-gradient(circle, #fff 3px, transparent 4px),
-    radial-gradient(circle, #fff 3px, transparent 4px),
-    radial-gradient(circle, #fff 3px, transparent 4px);
-  background-size: 30px 30px;
-  background-position:
-    10px 20px,
-    60px 40px,
-    120px 10px,
-    160px 60px,
-    200px 30px;
 }
 
 /* ============================================================
@@ -641,7 +347,6 @@ tr:hover {
 .heatmap-header {
   background: #1d2233;
   font-weight: bold;
-  font-size: 12px;
   padding: 6px;
   text-align: center;
   border-bottom: 1px solid #272b3a;
@@ -662,18 +367,11 @@ tr:hover {
 .heatmap-cell {
   padding: 6px;
   text-align: center;
-  font-size: 12px;
   cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.heatmap-cell:hover {
-  outline: 1px solid #fff;
-  z-index: 12;
 }
 
 /* ============================================================
-   FULLSCREEN MODAL
+   MODAL
    ============================================================ */
 
 .heatmap-modal {
@@ -684,7 +382,6 @@ tr:hover {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  backdrop-filter: blur(4px);
 }
 
 .heatmap-modal.open {
@@ -699,7 +396,6 @@ tr:hover {
   height: 85%;
   overflow: auto;
   border: 1px solid #272b3a;
-  animation: fadeIn 0.25s ease;
 }
 
 .heatmap-close {
@@ -709,15 +405,10 @@ tr:hover {
   font-size: 22px;
   float: right;
   cursor: pointer;
-  opacity: 0.7;
-}
-
-.heatmap-close:hover {
-  opacity: 1;
 }
 
 /* ============================================================
-   TOOLTIP (opraveno)
+   TOOLTIP
    ============================================================ */
 
 .tooltip {
@@ -734,16 +425,3 @@ tr:hover {
   transition: opacity 0.15s ease, transform 0.15s ease;
   z-index: 999999;
 }
-
-@media (max-width: 600px) {
-  .tooltip {
-    max-width: 200px;
-    font-size: 11px;
-  }
-}
-
-/* ============================================================
-   ANIMACE
-   ============================================================ */
-
-@keyframes fadeIn {
