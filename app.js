@@ -163,7 +163,6 @@ function render() {
 
   let filtered = enrichMatchups(matchups);
 
-  /* ----- SORTING ----- */
   if (sortColumn) {
     filtered.sort((a, b) => {
       const valA = a[sortColumn];
@@ -176,22 +175,18 @@ function render() {
     });
   }
 
-  /* ----- SEARCH (ONLY ENEMY LEAD) ----- */
   if (search) {
     filtered = filtered.filter(m =>
       m.enemyLead.toLowerCase().includes(search)
     );
   }
 
-  /* ----- FILTERS ----- */
   if (tier) filtered = filtered.filter(m => m.tier === tier);
   if (type) filtered = filtered.filter(m => m.type === type);
 
-  /* ----- PAGINATION ----- */
   const start = (currentPage - 1) * ROWS_PER_PAGE;
   const pageItems = filtered.slice(start, start + ROWS_PER_PAGE);
 
-  /* ----- GROUPING ----- */
   const groups = groupByEnemyLead(pageItems);
 
   let html = "";
@@ -229,7 +224,6 @@ function render() {
 
   tableBody.innerHTML = html;
 
-  /* ----- CLICK EVENTS FOR GROUP HEADERS ----- */
   document.querySelectorAll(".group-header").forEach(header => {
     header.addEventListener("click", () => {
       const enemy = header.dataset.group;
@@ -244,7 +238,6 @@ function render() {
     });
   });
 
-  /* ----- AUTO-EXPAND WHEN FILTERED TO SINGLE GROUP ----- */
   const headers = document.querySelectorAll(".group-header");
 
   if (headers.length === 1) {
@@ -258,7 +251,6 @@ function render() {
     arrow.textContent = "▼";
   }
 
-  /* ----- CLICK + TOOLTIP EVENTS FOR GROUP ROWS ----- */
   document.querySelectorAll(".group-row").forEach(row => {
     const enemy = row.querySelector("td:nth-child(2)").textContent;
     const myLead = row.querySelector("td:nth-child(3)").textContent;
@@ -536,12 +528,10 @@ function updateSortIcons() {
    ============================================================ */
 
 function renderAnalytics() {
-  // nothing needed yet, tiles are static
+  // zatím nic, tiles jsou statické
 }
 
-/* ============================================================
-   ANALYTICS TILE CLICK HANDLERS
-   ============================================================ */
+/* TILE CLICK HANDLERS */
 
 document.getElementById("tileHeatmap").addEventListener("click", () => {
   openHeatmapModal();
@@ -555,9 +545,7 @@ document.getElementById("tileScatter").addEventListener("click", () => {
   alert("Scatter plot bude v další verzi 😉");
 });
 
-/* ============================================================
-   MINI HEATMAP PREVIEW
-   ============================================================ */
+/* MINI HEATMAP PREVIEW */
 
 function generateMiniHeatmapPreview() {
   const preview = document.querySelector(".heatmap-preview");
@@ -608,8 +596,62 @@ function renderHeatmapFullscreen() {
   grid.className = "heatmap";
   grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
 
-  // Top-left corner
   grid.appendChild(makeHeaderCell(""));
 
-  // Column headers
-  myLeads.forEach
+  myLeads.forEach(my => {
+    grid.appendChild(makeHeaderCell(my));
+  });
+
+  enemyLeads.forEach(enemy => {
+    grid.appendChild(makeHeaderCell(enemy));
+
+    myLeads.forEach(my => {
+      const item = enriched.find(m => m.enemyLead === enemy && m.myLead === my);
+      grid.appendChild(makeHeatCell(item));
+    });
+  });
+
+  container.innerHTML = "";
+  container.appendChild(grid);
+}
+
+/* HEATMAP CELL + HEADER HELPERS */
+
+function makeHeaderCell(text) {
+  const cell = document.createElement("div");
+  cell.className = "heatmap-header";
+  cell.textContent = text;
+  return cell;
+}
+
+function makeHeatCell(item) {
+  const cell = document.createElement("div");
+  cell.className = "heatmap-cell";
+
+  if (!item) {
+    cell.style.background = "#2a2f44";
+    cell.textContent = "-";
+    return cell;
+  }
+
+  const w = item.winrate;
+
+  const color =
+    w === 100 ? "#2ecc71" :
+    w >= 80  ? "#3498db" :
+    w >= 50  ? "#f1c40f" :
+               "#e74c3c";
+
+  cell.style.background = color;
+  cell.textContent = w + "%";
+
+  cell.addEventListener("mousemove", e => {
+    showTooltip(item, e.pageX, e.pageY);
+  });
+
+  cell.addEventListener("mouseleave", hideTooltip);
+
+  cell.addEventListener("click", () => showDetail(item));
+
+  return cell;
+}
