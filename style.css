@@ -266,7 +266,7 @@ input:focus, select:focus {
 
 .table-section {
   margin-top: 30px;
-  overflow-x: auto; /* MOBILE FIX */
+  overflow-x: auto;
 }
 
 table {
@@ -275,7 +275,7 @@ table {
   background: #151824;
   border-radius: 8px;
   overflow: hidden;
-  min-width: 600px; /* MOBILE FIX */
+  min-width: 600px;
 }
 
 th, td {
@@ -576,22 +576,103 @@ tr:hover {
   }
 }
 
-.analytics-card {
-  min-height: 160px;
-}
+/* ============================================================
+   ANALYTICS TILES (VARIANTA A)
+   ============================================================ */
 
-.analytics-placeholder {
-  font-size: 13px;
-  color: #b0b4c4;
-  opacity: 0.9;
+.analytics-tile {
+  background: #151824;
+  border: 1px solid #272b3a;
+  border-radius: 10px;
+  padding: 20px;
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  padding: 20px 0;
 }
 
-.analytics-placeholder:hover {
-  opacity: 1;
-  text-decoration: underline;
+.analytics-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+}
+
+.tile-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.tile-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.tile-preview {
+  width: 100%;
+  height: 100px;
+  border-radius: 6px;
+  background: #1d2233;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Fake heatmap preview */
+.heatmap-preview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+}
+
+.heatmap-preview div {
+  width: 26px;
+  height: 26px;
+  border-radius: 3px;
+}
+
+/* Fake pie preview */
+.pie-preview {
+  position: relative;
+}
+
+.pie-preview::before {
+  content: "";
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #2ecc71 0 40%,
+    #3498db 40% 70%,
+    #f1c40f 70% 90%,
+    #e74c3c 90% 100%
+  );
+}
+
+/* Fake scatter preview */
+.scatter-preview {
+  position: relative;
+}
+
+.scatter-preview::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle, #fff 3px, transparent 4px),
+    radial-gradient(circle, #fff 3px, transparent 4px),
+    radial-gradient(circle, #fff 3px, transparent 4px),
+    radial-gradient(circle, #fff 3px, transparent 4px),
+    radial-gradient(circle, #fff 3px, transparent 4px);
+  background-size: 30px 30px;
+  background-position:
+    10px 20px,
+    60px 40px,
+    120px 10px,
+    160px 60px,
+    200px 30px;
 }
 
 /* ============================================================
@@ -652,82 +733,4 @@ tr:hover {
   padding: 20px;
   border-radius: 10px;
   width: 90%;
-  height: 85%;
-  overflow: auto;
-  border: 1px solid #272b3a;
-  animation: fadeIn 0.25s ease;
-}
-
-@media (max-width: 600px) {
-  .heatmap-modal-content {
-    width: 95%;
-    height: 90%;
-    padding: 10px;
-  }
-
-  .heatmap-header,
-  .heatmap-cell {
-    font-size: 10px;
-    padding: 4px;
-  }
-}
-
-.heatmap-close {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 22px;
-  float: right;
-  cursor: pointer;
-  opacity: 0.7;
-}
-
-.heatmap-close:hover {
-  opacity: 1;
-}
-
-/* ============================================================
-   TOOLTIP
-   ============================================================ */
-
-.tooltip {
-  position: absolute;
-  background: #1d2233;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #2c3145;
-  color: #fff;
-  font-size: 13px;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  z-index: 999;
-}
-
-@media (max-width: 600px) {
-  .tooltip {
-    max-width: 200px;
-    font-size: 11px;
-  }
-}
-
-/* ============================================================
-   ANIMACE
-   ============================================================ */
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ============================================================
-   FOOTER
-   ============================================================ */
-
-footer {
-  text-align: center;
-  padding: 20px;
-  margin-top: 20px;
-  color: #777;
-  border-top: 1px solid #272
+  height: 85
