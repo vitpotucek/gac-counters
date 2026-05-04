@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupSidebarToggle();
   loadJSON();
   setupSortingIcons();
+  generateMiniHeatmapPreview();
 });
 
 /* ============================================================
@@ -89,6 +90,7 @@ async function loadJSON() {
   currentPage = 1;
   render();
 }
+
 /* ============================================================
    COLLAPSIBLE GL SECTION
    ============================================================ */
@@ -279,6 +281,7 @@ function render() {
   updateSummary();
   renderPagination(filtered.length);
 }
+
 /* ============================================================
    PAGINATION
    ============================================================ */
@@ -477,6 +480,7 @@ document.addEventListener("click", e => {
     autocompleteList.style.display = "none";
   }
 });
+
 /* ============================================================
    SORTING ICONS
    ============================================================ */
@@ -528,24 +532,46 @@ function updateSortIcons() {
 }
 
 /* ============================================================
-   ANALYTICS – MINI HEATMAP PREVIEW
+   ANALYTICS – TILES
    ============================================================ */
 
 function renderAnalytics() {
-  renderHeatmapMini();
+  // nothing needed yet, tiles are static
 }
 
-function renderHeatmapMini() {
-  const container = document.querySelector(".analytics-card .analytics-placeholder");
-  if (!container) return;
+/* ============================================================
+   ANALYTICS TILE CLICK HANDLERS
+   ============================================================ */
 
-  container.innerHTML = `
-    <div class="heatmap-mini-info">
-      Klikni pro otevření fullscreen heatmapy
-    </div>
-  `;
+document.getElementById("tileHeatmap").addEventListener("click", () => {
+  openHeatmapModal();
+});
 
-  container.addEventListener("click", openHeatmapModal);
+document.getElementById("tilePie").addEventListener("click", () => {
+  alert("Pie chart bude v další verzi 😉");
+});
+
+document.getElementById("tileScatter").addEventListener("click", () => {
+  alert("Scatter plot bude v další verzi 😉");
+});
+
+/* ============================================================
+   MINI HEATMAP PREVIEW
+   ============================================================ */
+
+function generateMiniHeatmapPreview() {
+  const preview = document.querySelector(".heatmap-preview");
+  if (!preview) return;
+
+  preview.innerHTML = "";
+
+  const colors = ["#2ecc71", "#3498db", "#f1c40f", "#e74c3c"];
+
+  for (let i = 0; i < 9; i++) {
+    const cell = document.createElement("div");
+    cell.style.background = colors[Math.floor(Math.random() * colors.length)];
+    preview.appendChild(cell);
+  }
 }
 
 /* ============================================================
@@ -586,63 +612,4 @@ function renderHeatmapFullscreen() {
   grid.appendChild(makeHeaderCell(""));
 
   // Column headers
-  myLeads.forEach(my => {
-    grid.appendChild(makeHeaderCell(my));
-  });
-
-  // Rows
-  enemyLeads.forEach(enemy => {
-    grid.appendChild(makeHeaderCell(enemy));
-
-    myLeads.forEach(my => {
-      const item = enriched.find(m => m.enemyLead === enemy && m.myLead === my);
-      grid.appendChild(makeHeatCell(item));
-    });
-  });
-
-  container.innerHTML = "";
-  container.appendChild(grid);
-}
-
-/* ============================================================
-   HEATMAP CELL + HEADER HELPERS
-   ============================================================ */
-
-function makeHeaderCell(text) {
-  const cell = document.createElement("div");
-  cell.className = "heatmap-header";
-  cell.textContent = text;
-  return cell;
-}
-
-function makeHeatCell(item) {
-  const cell = document.createElement("div");
-  cell.className = "heatmap-cell";
-
-  if (!item) {
-    cell.style.background = "#2a2f44";
-    cell.textContent = "-";
-    return cell;
-  }
-
-  const w = item.winrate;
-
-  const color =
-    w === 100 ? "#2ecc71" :
-    w >= 80  ? "#3498db" :
-    w >= 50  ? "#f1c40f" :
-               "#e74c3c";
-
-  cell.style.background = color;
-  cell.textContent = w + "%";
-
-  cell.addEventListener("mousemove", e => {
-    showTooltip(item, e.pageX, e.pageY);
-  });
-
-  cell.addEventListener("mouseleave", hideTooltip);
-
-  cell.addEventListener("click", () => showDetail(item));
-
-  return cell;
-}
+  myLeads.forEach
