@@ -16,7 +16,7 @@ html {
 
 .app-layout,
 .main-content {
-  background: #0f111a; /* ← FIX scrollovacího problému */
+  background: #0f111a;
 }
 
 h1, h2, h3 {
@@ -34,7 +34,7 @@ header {
 }
 
 /* ============================================================
-   HAMBURGER BUTTON (LEFT SIDE)
+   HAMBURGER BUTTON
    ============================================================ */
 
 .hamburger {
@@ -83,7 +83,7 @@ header {
 }
 
 /* ============================================================
-   LAYERED SECTIONS (fix for analytics jumping down)
+   LAYERED SECTIONS (ABSOLUTE)
    ============================================================ */
 
 #countersSection,
@@ -93,6 +93,7 @@ header {
   left: 0;
   width: 100%;
   padding-top: 30px;
+  background: #0f111a; /* ← FINÁLNÍ FIX */
 }
 
 /* ============================================================
@@ -137,7 +138,7 @@ header {
 }
 
 /* ============================================================
-   PAGE TRANSITION ANIMATION
+   PAGE TRANSITION
    ============================================================ */
 
 .fade-section {
