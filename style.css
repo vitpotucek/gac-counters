@@ -600,3 +600,25 @@ footer {
   color: #777;
   border-top: 1px solid #272b3a;
 }
+
+/* ============================================================
+   Scrollbar fix
+   ============================================================ */
+
+table {
+  scrollbar-width: thin;
+  scrollbar-color: #272b3a #0f111a;
+}
+
+table::-webkit-scrollbar {
+  width: 10px;
+}
+
+table::-webkit-scrollbar-track {
+  background: #0f111a; /* ← tohle odstraní hnědý pruh */
+}
+
+table::-webkit-scrollbar-thumb {
+  background: #272b3a;
+  border-radius: 6px;
+}
