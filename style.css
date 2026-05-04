@@ -25,7 +25,7 @@ header {
 }
 
 /* ============================================================
-   HAMBURGER BUTTON (LEFT SIDE)
+   HAMBURGER BUTTON
    ============================================================ */
 
 .hamburger {
@@ -74,7 +74,7 @@ header {
 }
 
 /* ============================================================
-   LAYERED SECTIONS (fix for analytics jumping down)
+   LAYERED SECTIONS (fix)
    ============================================================ */
 
 #countersSection,
@@ -83,7 +83,7 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  padding-top: 30px; /* ← FIX: přidána mezera nahoře */
+  padding-top: 30px; /* mezera pod headerem */
 }
 
 /* ============================================================
@@ -128,7 +128,7 @@ header {
 }
 
 /* ============================================================
-   PAGE TRANSITION ANIMATION
+   PAGE TRANSITION
    ============================================================ */
 
 .fade-section {
@@ -553,41 +553,29 @@ tr:hover {
 }
 
 /* ============================================================
-   TOOLTIP
+   HEATMAP
    ============================================================ */
 
-.tooltip {
-  position: absolute;
-  background: #1d2233;
-  padding: 8px 12px;
+.heatmap {
+  display: grid;
+  border: 1px solid #272b3a;
   border-radius: 6px;
-  border: 1px solid #2c3145;
-  color: #fff;
-  font-size: 13px;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  z-index: 999;
+  overflow: hidden;
 }
 
-/* ============================================================
-   ANIMACE
-   ============================================================ */
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ============================================================
-   FOOTER
-   ============================================================ */
-
-footer {
+.heatmap-header {
+  background: #1d2233;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 6px;
   text-align: center;
-  padding: 20px;
-  margin-top: 20px;
-  color: #777;
-  border-top: 1px solid #272b3a;
+  border-bottom: 1px solid #272b3a;
+  border-right: 1px solid #272b3a;
 }
+
+.heatmap-cell {
+  padding: 6px;
+  text-align: center;
+  font-size: 12px;
+  cursor: pointer;
+  transition
