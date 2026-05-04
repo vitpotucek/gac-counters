@@ -1,5 +1,5 @@
 /* ============================================================
-   GAC COUNTERS – COUNTERS VIEW + ANALYTICS VIEW (SIDEBAR)
+   GAC COUNTERS – COUNTERS VIEW + ANALYTICS VIEW
    ============================================================ */
 
 /* ---------- GLOBAL STATE ---------- */
@@ -8,22 +8,7 @@ let matchups = [];
 let filterEnemyOnly = false;
 let currentPage = 1;
 
-let sortColumn = null;
-let sortDirection = 1;
-
-const ROWS_PER_PAGE = 10;
-
-/* ---------- DOM ELEMENTS ---------- */
-
-const tableBody = document.getElementById("matchupTableBody");
-const detailPanel = document.getElementById("detailPanel");
-
-const searchInput = document.getElementById("searchInput");
-const tierFilter = document.getElementById("tierFilter");
-const typeFilter = document.getElementById("typeFilter");
-
-const autocompleteList = document.getElementById("autocompleteList");
-const tooltip = document.getElementById("tooltip");
+/* ---------- ELEMENTS ---------- */
 
 const countersSection = document.getElementById("countersSection");
 const analyticsSection = document.getElementById("analyticsSection");
@@ -34,503 +19,197 @@ const navAnalytics = document.getElementById("navAnalytics");
 const sidebar = document.getElementById("sidebar");
 const menuToggle = document.getElementById("menuToggle");
 
-/* ---------- INITIALIZATION ---------- */
+/* ============================================================
+   SIDEBAR TOGGLE
+   ============================================================ */
 
-document.addEventListener("DOMContentLoaded", () => {
-  setupCollapsible();
-  setupNav();
-  setupSidebarToggle();
-  loadJSON();
-  setupSortingIcons();
+menuToggle.addEventListener("click", () => {
+  sidebar.classList.toggle("open");
 });
 
 /* ============================================================
-   SIDEBAR + NAVIGATION
+   PAGE SWITCHING (NEW LAYOUT)
    ============================================================ */
 
-function setupSidebarToggle() {
-  if (!menuToggle || !sidebar) return;
+function showCounters() {
+  countersSection.classList.add("visible");
+  analyticsSection.classList.remove("visible");
 
-  menuToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("open");
-  });
+  navCounters.classList.add("active");
+  navAnalytics.classList.remove("active");
 }
 
-function setupNav() {
-  navCounters.addEventListener("click", () => {
-    navCounters.classList.add("active");
-    navAnalytics.classList.remove("active");
+function showAnalytics() {
+  analyticsSection.classList.add("visible");
+  countersSection.classList.remove("visible");
 
-    countersSection.classList.add("visible");
-    analyticsSection.classList.remove("visible");
-
-    sidebar.classList.remove("open");
-  });
-
-  navAnalytics.addEventListener("click", () => {
-    navAnalytics.classList.add("active");
-    navCounters.classList.remove("active");
-
-    analyticsSection.classList.add("visible");
-    countersSection.classList.remove("visible");
-
-    sidebar.classList.remove("open");
-    renderAnalytics();
-  });
+  navAnalytics.classList.add("active");
+  navCounters.classList.remove("active");
 }
+
+navCounters.addEventListener("click", showCounters);
+navAnalytics.addEventListener("click", showAnalytics);
 
 /* ============================================================
-   LOAD DATA
+   COLLAPSIBLE CARDS
    ============================================================ */
 
-async function loadJSON() {
-  const response = await fetch("data.json");
-  matchups = await response.json();
-  currentPage = 1;
-  render();
-}
+document.addEventListener("click", (e) => {
+  const header = e.target.closest(".collapsible-header");
+  if (!header) return;
+
+  const card = header.closest(".collapsible-card");
+  card.classList.toggle("open");
+});
 
 /* ============================================================
-   COLLAPSIBLE GL SECTION
+   AUTOCOMPLETE
    ============================================================ */
 
-function setupCollapsible() {
-  const card = document.querySelector(".collapsible-card");
-  const header = document.querySelector(".collapsible-header");
+const searchInput = document.getElementById("searchInput");
+const autocompleteList = document.getElementById("autocompleteList");
 
-  if (!card || !header) return;
-
-  card.classList.add("open");
-  header.addEventListener("click", () => card.classList.toggle("open"));
-}
-
-/* ============================================================
-   HELPERS
-   ============================================================ */
-
-function calcWinrate(m) {
-  return m.attempts ? Math.round((m.wins / m.attempts) * 100) : 0;
-}
-
-function calcTier(winrate, attempts) {
-  if (attempts >= 5 && winrate === 100) return "S";
-  if (winrate >= 80) return "A";
-  if (winrate >= 50) return "B";
-  return "C";
-}
-
-function enrichMatchups(list) {
-  return list.map((m, idx) => {
-    const winrate = calcWinrate(m);
-    return {
-      ...m,
-      id: idx,
-      winrate,
-      tier: calcTier(winrate, m.attempts)
-    };
-  });
-}
-
-function groupByEnemyLead(list) {
-  const groups = {};
-  list.forEach(m => {
-    if (!groups[m.enemyLead]) groups[m.enemyLead] = [];
-    groups[m.enemyLead].push(m);
-  });
-  return groups;
-}
-
-function safeClassName(name) {
-  return name.replace(/[^a-zA-Z0-9_-]/g, "-");
-}
-
-function colorClassForWinrate(w) {
-  if (w === 100) return "green";
-  if (w >= 80) return "blue";
-  if (w >= 50) return "yellow";
-  return "red";
-}
-
-/* ============================================================
-   RENDER MAIN TABLE (GROUPED BY ENEMY LEAD)
-   ============================================================ */
-
-function render() {
-  const search = searchInput.value.toLowerCase();
-  const tier = tierFilter.value;
-  const type = typeFilter.value;
-
-  let filtered = enrichMatchups(matchups);
-
-  /* ----- SORTING ----- */
-  if (sortColumn) {
-    filtered.sort((a, b) => {
-      const valA = a[sortColumn];
-      const valB = b[sortColumn];
-
-      if (typeof valA === "number" && typeof valB === "number") {
-        return (valA - valB) * sortDirection;
-      }
-      return valA.toString().localeCompare(valB.toString()) * sortDirection;
-    });
+searchInput.addEventListener("input", () => {
+  const value = searchInput.value.trim().toLowerCase();
+  if (!value) {
+    autocompleteList.style.display = "none";
+    return;
   }
 
-  /* ----- SEARCH (ONLY ENEMY LEAD) ----- */
-  if (search) {
-    filtered = filtered.filter(m =>
-      m.enemyLead.toLowerCase().includes(search)
-    );
-  }
+  const suggestions = [...new Set(matchups.map(m => m.enemy.toLowerCase()))]
+    .filter(name => name.includes(value))
+    .slice(0, 10);
 
-  /* ----- FILTERS ----- */
-  if (tier) filtered = filtered.filter(m => m.tier === tier);
-  if (type) filtered = filtered.filter(m => m.type === type);
+  autocompleteList.innerHTML = suggestions
+    .map(s => `<div class="autocomplete-item">${s}</div>`)
+    .join("");
 
-  /* ----- PAGINATION ----- */
-  const start = (currentPage - 1) * ROWS_PER_PAGE;
-  const pageItems = filtered.slice(start, start + ROWS_PER_PAGE);
+  autocompleteList.style.display = suggestions.length ? "block" : "none";
+});
 
-  /* ----- GROUPING ----- */
-  const groups = groupByEnemyLead(pageItems);
+autocompleteList.addEventListener("click", (e) => {
+  if (!e.target.classList.contains("autocomplete-item")) return;
 
-  let html = "";
+  searchInput.value = e.target.textContent;
+  autocompleteList.style.display = "none";
+  applyFilters();
+});
 
-  Object.keys(groups).forEach(enemy => {
-    const group = groups[enemy];
-    const bestWinrate = Math.max(...group.map(g => g.winrate));
-    const count = group.length;
-    const safe = safeClassName(enemy);
-    const colorClass = colorClassForWinrate(bestWinrate);
+/* ============================================================
+   FILTERS
+   ============================================================ */
 
-    html += `
-      <tr class="group-header group-color-${colorClass}" data-group="${enemy}">
-        <td colspan="6">
-          <span class="group-arrow">▶</span>
-          <strong>${enemy}</strong>
-          <span class="group-info">(${count} counters, best ${bestWinrate}%)</span>
-        </td>
+document.getElementById("resetFilterBtn").addEventListener("click", () => {
+  searchInput.value = "";
+  document.getElementById("tierFilter").value = "";
+  document.getElementById("typeFilter").value = "";
+  applyFilters();
+});
+
+/* ============================================================
+   MATCHUP TABLE RENDERING
+   ============================================================ */
+
+function renderTable(data) {
+  const tbody = document.getElementById("matchupTableBody");
+  tbody.innerHTML = data
+    .map(m => `
+      <tr data-id="${m.id}">
+        <td>${m.type}</td>
+        <td>${m.enemy}</td>
+        <td>${m.my}</td>
+        <td>${m.winrate}%</td>
+        <td><span class="badge badge-${m.tier}">${m.tier}</span></td>
+        <td>${m.attempts}</td>
       </tr>
-    `;
-
-    group.forEach(m => {
-      html += `
-        <tr class="group-row group-${safe}" style="display:none;">
-          <td>${m.type}</td>
-          <td>${m.enemyLead}</td>
-          <td>${m.myLead}</td>
-          <td>${m.winrate}%</td>
-          <td><span class="badge badge-${m.tier}">${m.tier}</span></td>
-          <td>${m.wins}/${m.attempts}</td>
-        </tr>
-      `;
-    });
-  });
-
-  tableBody.innerHTML = html;
-
-  /* ----- CLICK EVENTS FOR GROUP HEADERS ----- */
-  document.querySelectorAll(".group-header").forEach(header => {
-    header.addEventListener("click", () => {
-      const enemy = header.dataset.group;
-      const safe = safeClassName(enemy);
-      const rows = document.querySelectorAll(`.group-${safe}`);
-      const arrow = header.querySelector(".group-arrow");
-
-      const isOpen = arrow.textContent === "▼";
-
-      rows.forEach(r => r.style.display = isOpen ? "none" : "table-row");
-      arrow.textContent = isOpen ? "▶" : "▼";
-    });
-  });
-
-  /* ----- AUTO-EXPAND WHEN FILTERED TO SINGLE GROUP ----- */
-  const headers = document.querySelectorAll(".group-header");
-
-  if (headers.length === 1) {
-    const header = headers[0];
-    const enemy = header.dataset.group;
-    const safe = safeClassName(enemy);
-    const rows = document.querySelectorAll(`.group-${safe}`);
-    const arrow = header.querySelector(".group-arrow");
-
-    rows.forEach(r => r.style.display = "table-row");
-    arrow.textContent = "▼";
-  }
-
-  /* ----- CLICK + TOOLTIP EVENTS FOR GROUP ROWS ----- */
-  document.querySelectorAll(".group-row").forEach(row => {
-    const enemy = row.querySelector("td:nth-child(2)").textContent;
-    const myLead = row.querySelector("td:nth-child(3)").textContent;
-
-    const rowData = filtered.find(
-      m => m.enemyLead === enemy && m.myLead === myLead
-    );
-
-    if (!rowData) return;
-
-    row.addEventListener("click", () => showDetail(rowData));
-
-    row.addEventListener("mousemove", e => {
-      showTooltip(rowData, e.pageX, e.pageY);
-    });
-
-    row.addEventListener("mouseleave", hideTooltip);
-  });
-
-  updateSummary();
-  renderPagination(filtered.length);
+    `)
+    .join("");
 }
 
 /* ============================================================
    PAGINATION
    ============================================================ */
 
-function renderPagination(totalItems) {
-  const pagination = document.getElementById("pagination");
-  pagination.innerHTML = "";
-
-  const totalPages = Math.ceil(totalItems / ROWS_PER_PAGE);
+function renderPagination(totalPages) {
+  const container = document.getElementById("pagination");
+  container.innerHTML = "";
 
   for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement("button");
     btn.textContent = i;
-    btn.classList.add("page-btn");
-    if (i === currentPage) btn.classList.add("active");
-
+    btn.className = "page-btn" + (i === currentPage ? " active" : "");
     btn.addEventListener("click", () => {
       currentPage = i;
-      render();
+      applyFilters();
     });
-
-    pagination.appendChild(btn);
+    container.appendChild(btn);
   }
 }
 
 /* ============================================================
-   SUMMARY (GL COUNTERS)
+   FILTER LOGIC
    ============================================================ */
 
-function updateSummary() {
-  const fullList = enrichMatchups(matchups);
+function applyFilters() {
+  const search = searchInput.value.trim().toLowerCase();
+  const tier = document.getElementById("tierFilter").value;
+  const type = document.getElementById("typeFilter").value;
 
-  const glList = [
-    "Ahsoka Tano",
-    "Rey",
-    "Supreme Leader Kylo Ren",
-    "Jedi Master Luke Skywalker",
-    "Jedi Master Kenobi",
-    "Jabba",
-    "Leia Organa",
-    "Lord Vader",
-    "Sith Eternal Emperor"
-  ];
+  let filtered = matchups;
 
-  const glHTML = glList
-    .map(gl => {
-      const counters = fullList.filter(m => m.enemyLead === gl);
-      if (!counters.length) return "";
+  if (search) {
+    filtered = filtered.filter(m =>
+      m.enemy.toLowerCase().includes(search)
+    );
+  }
 
-      return `
-        <div class="gl-tile gl-${gl.replace(/ /g, "-")}" onclick="filterForGL('${gl}')">
-          <div class="gl-title">${gl}</div>
-        </div>
-      `;
-    })
-    .join("");
+  if (tier) {
+    filtered = filtered.filter(m => m.tier === tier);
+  }
 
-  const glContainer = document.getElementById("glCounters");
-  if (glContainer) glContainer.innerHTML = glHTML;
+  if (type) {
+    filtered = filtered.filter(m => m.type === type);
+  }
+
+  const pageSize = 20;
+  const totalPages = Math.ceil(filtered.length / pageSize);
+
+  const pageData = filtered.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  renderTable(pageData);
+  renderPagination(totalPages);
 }
 
 /* ============================================================
    DETAIL PANEL
    ============================================================ */
 
-function showDetail(m) {
-  detailPanel.innerHTML = `
-    <p><strong>Type:</strong> ${m.type}</p>
-    <p><strong>Enemy lead:</strong> ${m.enemyLead}</p>
-    <p><strong>My lead:</strong> ${m.myLead}</p>
-    <p><strong>Winrate:</strong> ${m.winrate}% (${m.wins}/${m.attempts})</p>
-    <p><strong>Tier:</strong> <span class="badge badge-${m.tier}">${m.tier}</span></p>
-    <p><strong>Notes:</strong> ${m.notes || "—"}</p>
+document.addEventListener("click", (e) => {
+  const row = e.target.closest("tr[data-id]");
+  if (!row) return;
+
+  const id = row.getAttribute("data-id");
+  const item = matchups.find(m => m.id == id);
+
+  const panel = document.getElementById("detailPanel");
+  panel.innerHTML = `
+    <h3>${item.enemy} → ${item.my}</h3>
+    <p>Winrate: ${item.winrate}%</p>
+    <p>Attempts: ${item.attempts}</p>
+    <p>Tier: ${item.tier}</p>
   `;
-}
-
-/* ============================================================
-   TOOLTIP — UPDATED TO SHOW NOTES
-   ============================================================ */
-
-function showTooltip(m, x, y) {
-  const notes = m.notes && m.notes.trim() !== "" ? m.notes : "(no notes)";
-
-  tooltip.innerHTML = `
-    <strong>${m.enemyLead}</strong> vs <strong>${m.myLead}</strong><br>
-    <em>📝 Notes:</em><br>
-    ${notes}
-  `;
-
-  tooltip.style.left = x + 12 + "px";
-  tooltip.style.top = y + 12 + "px";
-  tooltip.style.opacity = 1;
-  tooltip.style.transform = "translateY(0)";
-}
-
-function hideTooltip() {
-  tooltip.style.opacity = 0;
-  tooltip.style.transform = "translateY(-6px)";
-}
-
-/* ============================================================
-   FILTERING
-   ============================================================ */
-
-function filterForGL(glName) {
-  if (searchInput.value === glName && filterEnemyOnly) {
-    resetFilters();
-    return;
-  }
-
-  filterEnemyOnly = true;
-  searchInput.value = glName;
-  typeFilter.value = "";
-  currentPage = 1;
-  render();
-
-  try {
-    document.querySelector(".table-section").scrollIntoView({ behavior: "smooth" });
-  } catch {}
-}
-
-function resetFilters() {
-  searchInput.value = "";
-  tierFilter.value = "";
-  typeFilter.value = "";
-  filterEnemyOnly = false;
-  currentPage = 1;
-  render();
-}
-
-/* ============================================================
-   AUTOCOMPLETE
-   ============================================================ */
-
-function updateAutocomplete() {
-  const text = searchInput.value.toLowerCase();
-
-  if (!text) {
-    autocompleteList.style.display = "none";
-    return;
-  }
-
-  const suggestions = [...new Set(
-    matchups
-      .flatMap(m =>
-        filterEnemyOnly ? [m.enemyLead] : [m.enemyLead]
-      )
-      .filter(name => name.toLowerCase().includes(text))
-  )].slice(0, 10);
-
-  if (!suggestions.length) {
-    autocompleteList.style.display = "none";
-    return;
-  }
-
-  autocompleteList.innerHTML = suggestions
-    .map(s => `<div class="autocomplete-item" data-value="${s}">${s}</div>`)
-    .join("");
-
-  autocompleteList.style.display = "block";
-}
-
-/* ============================================================
-   EVENT LISTENERS – FILTERS, AUTOCOMPLETE
-   ============================================================ */
-
-searchInput.addEventListener("input", () => {
-  filterEnemyOnly = false;
-  currentPage = 1;
-  updateAutocomplete();
-  render();
-});
-
-autocompleteList.addEventListener("click", e => {
-  if (e.target.classList.contains("autocomplete-item")) {
-    searchInput.value = e.target.dataset.value;
-    filterEnemyOnly = true;
-    currentPage = 1;
-    render();
-    autocompleteList.style.display = "none";
-  }
-});
-
-tierFilter.addEventListener("change", () => {
-  autocompleteList.style.display = "none";
-  currentPage = 1;
-  render();
-});
-
-typeFilter.addEventListener("change", () => {
-  autocompleteList.style.display = "none";
-  currentPage = 1;
-  render();
-});
-
-document.getElementById("resetFilterBtn").addEventListener("click", resetFilters);
-
-document.addEventListener("click", e => {
-  if (!e.target.closest(".search-wrapper") &&
-      !e.target.closest("#autocompleteList")) {
-    autocompleteList.style.display = "none";
-  }
 });
 
 /* ============================================================
-   SORTING ICONS
+   INITIAL LOAD
    ============================================================ */
 
-function setupSortingIcons() {
-  const headers = document.querySelectorAll("th");
-  const columns = ["type", "enemyLead", "myLead", "winrate", "tier", "attempts"];
-
-  headers.forEach(th => {
-    const icon = document.createElement("span");
-    icon.classList.add("sort-icon");
-    icon.textContent = "↕";
-    th.appendChild(icon);
+fetch("data.json")
+  .then(res => res.json())
+  .then(data => {
+    matchups = data;
+    applyFilters();
   });
-
-  headers.forEach((th, index) => {
-    th.addEventListener("click", () => {
-      const col = columns[index];
-
-      if (sortColumn === col) {
-        sortDirection *= -1;
-      } else {
-        sortColumn = col;
-        sortDirection = 1;
-      }
-
-      updateSortIcons();
-      currentPage = 1;
-      render();
-    });
-  });
-}
-
-function updateSortIcons() {
-  const icons = document.querySelectorAll(".sort-icon");
-  const columns = ["type", "enemyLead", "myLead", "winrate", "tier", "attempts"];
-
-  icons.forEach((icon, i) => {
-    const col = columns[i];
-
-    if (col === sortColumn) {
-      icon.classList.add("sort-active");
-      icon.textContent = sortDirection === 1 ? "↑" : "↓";
-    } else {
-      icon.classList.remove("sort-active");
-      icon.textContent = "↕";
-    }
-  });
-}
