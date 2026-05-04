@@ -3,36 +3,12 @@
    ============================================================ */
 
 html, body {
-  height: 100%;          /* ← KLÍČOVÝ FIX */
-  background: #0f111a;   /* sjednocené pozadí */
+  height: 100%;
   margin: 0;
   padding: 0;
-}
-
-body {
-  font-family: Arial, sans-serif;
+  background: #0f111a;
   color: #e0e3eb;
-}
-
-/* Rodiče musí mít výšku, jinak absolute sekce visí ve vzduchu */
-.app-layout {
-  background: #0f111a;
-  min-height: 100vh;     /* ← FIX */
-}
-
-.main-content {
-  background: #0f111a;
-  min-height: 100vh;     /* ← FIX */
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  box-sizing: border-box;
-  position: relative;
-}
-
-h1, h2, h3 {
-  margin: 0 0 10px;
-  color: #ffffff;
+  font-family: Arial, sans-serif;
 }
 
 header {
@@ -44,22 +20,22 @@ header {
   gap: 20px;
 }
 
-/* ============================================================
-   HAMBURGER BUTTON
-   ============================================================ */
-
 .hamburger {
   font-size: 26px;
   background: none;
   border: none;
   color: #fff;
   cursor: pointer;
-  display: block;
 }
 
 /* ============================================================
-   SIDEBAR
+   LAYOUT
    ============================================================ */
+
+.app-layout {
+  display: flex;
+  min-height: calc(100vh - 80px);
+}
 
 .sidebar {
   width: 220px;
@@ -67,12 +43,12 @@ header {
   border-right: 1px solid #272b3a;
   padding: 20px 15px;
   box-sizing: border-box;
-  transition: transform 0.3s ease;
-  transform: translateX(-240px);
   position: fixed;
   top: 80px;
   left: 0;
   height: calc(100vh - 80px);
+  transform: translateX(-240px);
+  transition: transform 0.3s ease;
   z-index: 200;
 }
 
@@ -80,19 +56,26 @@ header {
   transform: translateX(0);
 }
 
+.main-content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
 /* ============================================================
-   LAYERED SECTIONS (ABSOLUTE)
+   PAGE SECTIONS (NO ABSOLUTE ANYMORE)
    ============================================================ */
 
-#countersSection,
-#analyticsSection {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding-top: 30px;
-  background: #0f111a;   /* sjednocené pozadí */
-  min-height: 100vh;     /* ← FIX */
+.page-section {
+  display: none;
+  animation: fadeIn 0.25s ease;
+}
+
+.page-section.visible {
+  display: block;
 }
 
 /* ============================================================
@@ -102,15 +85,8 @@ header {
 .sidebar-title {
   font-size: 14px;
   text-transform: uppercase;
-  letter-spacing: 1px;
   color: #888;
   margin-bottom: 10px;
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .nav-btn {
@@ -119,15 +95,14 @@ header {
   border: 1px solid #272b3a;
   border-radius: 4px;
   color: #e0e3eb;
-  text-align: left;
   cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s ease, transform 0.15s ease;
+  margin-bottom: 8px;
+  text-align: left;
+  transition: background 0.2s ease;
 }
 
 .nav-btn:hover {
   background: #1f2435;
-  transform: translateX(2px);
 }
 
 .nav-btn.active {
@@ -137,24 +112,7 @@ header {
 }
 
 /* ============================================================
-   PAGE TRANSITION
-   ============================================================ */
-
-.fade-section {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  pointer-events: none;
-}
-
-.fade-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-/* ============================================================
-   FILTER BAR
+   FILTERS
    ============================================================ */
 
 .controls {
@@ -162,14 +120,12 @@ header {
   gap: 20px;
   margin-top: 15px;
   flex-wrap: wrap;
-  align-items: flex-end;
 }
 
 label {
   display: flex;
   flex-direction: column;
   font-size: 14px;
-  gap: 4px;
 }
 
 input, select {
@@ -179,33 +135,10 @@ input, select {
   border: 1px solid #3a3f55;
   background: #0f111a;
   color: #fff;
-  box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-
-input:hover, select:hover {
-  border-color: #4a5270;
-}
-
-input:focus, select:focus {
-  outline: none;
-  border-color: #6b78a8;
-  box-shadow: 0 0 4px rgba(107,120,168,0.5);
-}
-
-/* ============================================================
-   SEARCH WRAPPER
-   ============================================================ */
 
 .search-wrapper {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.search-wrapper input {
-  padding-right: 36px;
 }
 
 .reset-icon {
@@ -213,10 +146,7 @@ input:focus, select:focus {
   right: 10px;
   bottom: 10px;
   cursor: pointer;
-  font-size: 16px;
   opacity: 0.6;
-  transition: opacity 0.2s ease;
-  user-select: none;
 }
 
 .reset-icon:hover {
@@ -230,8 +160,8 @@ input:focus, select:focus {
 .summary {
   display: flex;
   gap: 20px;
-  flex-wrap: wrap;
   margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .card {
@@ -241,12 +171,6 @@ input:focus, select:focus {
   border: 1px solid #272b3a;
   flex: 1;
   min-width: 250px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
 
 /* ============================================================
@@ -265,6 +189,25 @@ table {
   overflow: hidden;
 }
 
+/* Scrollbar fix */
+table {
+  scrollbar-width: thin;
+  scrollbar-color: #272b3a #0f111a;
+}
+
+table::-webkit-scrollbar {
+  width: 10px;
+}
+
+table::-webkit-scrollbar-track {
+  background: #0f111a;
+}
+
+table::-webkit-scrollbar-thumb {
+  background: #272b3a;
+  border-radius: 6px;
+}
+
 th, td {
   padding: 10px;
   border-bottom: 1px solid #272b3a;
@@ -273,100 +216,7 @@ th, td {
 th {
   background: #1d2233;
   text-align: left;
-  cursor: pointer;
 }
-
-tr {
-  transition: background 0.25s ease, transform 0.15s ease;
-}
-
-tr:hover {
-  background: #242b40;
-  transform: translateX(4px);
-  cursor: pointer;
-}
-
-/* ============================================================
-   GROUPED TABLE
-   ============================================================ */
-
-.group-header {
-  background: #1d2233;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: bold;
-  border-bottom: 1px solid #272b3a;
-  transition: background 0.2s ease;
-}
-
-.group-header:hover {
-  background: #242b40;
-}
-
-.group-header td {
-  padding: 12px;
-}
-
-.group-arrow {
-  margin-right: 8px;
-  display: inline-block;
-  width: 16px;
-}
-
-.group-info {
-  opacity: 0.7;
-  margin-left: 6px;
-  font-size: 13px;
-}
-
-.group-row {
-  background: #151824;
-}
-
-.group-row td {
-  padding-left: 32px;
-}
-
-/* ============================================================
-   GROUP COLOR HIGHLIGHT
-   ============================================================ */
-
-.group-color-green {
-  border-left: 6px solid #2ecc71;
-}
-
-.group-color-blue {
-  border-left: 6px solid #3498db;
-}
-
-.group-color-yellow {
-  border-left: 6px solid #f1c40f;
-}
-
-.group-color-red {
-  border-left: 6px solid #e74c3c;
-}
-
-/* ============================================================
-   BADGES
-   ============================================================ */
-
-.badge {
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-  color: #fff;
-  transition: transform 0.15s ease;
-}
-
-.badge:hover {
-  transform: scale(1.08);
-}
-
-.badge-S { background: #2ecc71; }
-.badge-A { background: #3498db; }
-.badge-B { background: #f1c40f; color: #000; }
-.badge-C { background: #e74c3c; }
 
 /* ============================================================
    DETAIL PANEL
@@ -378,110 +228,16 @@ tr:hover {
   padding: 15px;
   border-radius: 8px;
   border: 1px solid #272b3a;
-  animation: fadeIn 0.25s ease;
 }
 
 /* ============================================================
-   PAGINATION
-   ============================================================ */
-
-.pagination {
-  margin-top: 15px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.page-btn {
-  padding: 6px 12px;
-  background: #1d2233;
-  border: 1px solid #272b3a;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #e0e3eb;
-  transition: background 0.2s ease, transform 0.15s ease;
-}
-
-.page-btn:hover {
-  background: #2a3147;
-  transform: translateY(-2px);
-}
-
-.page-btn.active {
-  background: #3498db;
-  border-color: #3498db;
-  font-weight: bold;
-}
-
-/* ============================================================
-   AUTOCOMPLETE
-   ============================================================ */
-
-.autocomplete-list {
-  position: absolute;
-  background: #1d2233;
-  border: 1px solid #2c3145;
-  border-radius: 4px;
-  margin-top: 2px;
-  width: 260px;
-  max-height: 200px;
-  overflow-y: auto;
-  display: none;
-  z-index: 50;
-}
-
-.autocomplete-item {
-  padding: 6px 10px;
-  cursor: pointer;
-  color: #fff;
-}
-
-.autocomplete-item:hover {
-  background: #2a3147;
-}
-
-/* ============================================================
-   COLLAPSIBLE
-   ============================================================ */
-
-.collapsible-card {
-  overflow: hidden;
-}
-
-.collapsible-header {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.collapse-icon {
-  transition: transform 0.2s ease;
-}
-
-.collapsible-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.25s ease;
-}
-
-.collapsible-card.open .collapsible-content {
-  max-height: 1000px;
-}
-
-.collapsible-card.open .collapse-icon {
-  transform: rotate(90deg);
-}
-
-/* ============================================================
-   GL TILE
+   GL GRID
    ============================================================ */
 
 .gl-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 10px;
-  margin-top: 10px;
 }
 
 .gl-tile {
@@ -496,8 +252,6 @@ tr:hover {
   color: white;
   font-weight: bold;
   cursor: pointer;
-  overflow: hidden;
-  transition: transform 0.2s ease;
 }
 
 .gl-tile::after {
@@ -505,44 +259,16 @@ tr:hover {
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.45);
-  transition: background 0.2s ease;
-}
-
-.gl-tile:hover {
-  transform: scale(1.02);
-}
-
-.gl-tile:hover::after {
-  background: rgba(0,0,0,0.6);
 }
 
 .gl-title {
   position: relative;
   z-index: 2;
-  font-size: 18px;
 }
 
 /* ============================================================
-   GL OBRÁZKY
+   ANALYTICS
    ============================================================ */
-
-.gl-Ahsoka-Tano { background-image: url("img/gl/ahsoka.jpg"); }
-.gl-Rey { background-image: url("img/gl/rey.jpg"); }
-.gl-Supreme-Leader-Kylo-Ren { background-image: url("img/gl/slkr.jpg"); }
-.gl-Jedi-Master-Luke-Skywalker { background-image: url("img/gl/jml.jpg"); }
-.gl-Jedi-Master-Kenobi { background-image: url("img/gl/jmk.jpeg"); }
-.gl-Jabba { background-image: url("img/gl/jabba.jpg"); }
-.gl-Leia-Organa { background-image: url("img/gl/leia.jpeg"); }
-.gl-Lord-Vader { background-image: url("img/gl/lv.jpg"); }
-.gl-Sith-Eternal-Emperor { background-image: url("img/gl/see.jpg"); }
-
-/* ============================================================
-   ANALYTICS SECTION
-   ============================================================ */
-
-.analytics-section {
-  animation: fadeIn 0.25s ease;
-}
 
 .analytics-grid {
   display: grid;
@@ -555,29 +281,16 @@ tr:hover {
   min-height: 160px;
 }
 
-.analytics-placeholder {
-  font-size: 13px;
-  color: #b0b4c4;
-  opacity: 0.9;
-}
-
 /* ============================================================
-   TOOLTIP
+   FOOTER
    ============================================================ */
 
-.tooltip {
-  position: absolute;
-  background: #1d2233;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #2c3145;
-  color: #fff;
-  font-size: 13px;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  z-index: 999;
+footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  color: #777;
+  border-top: 1px solid #272b3a;
 }
 
 /* ============================================================
@@ -587,38 +300,4 @@ tr:hover {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ============================================================
-   FOOTER
-   ============================================================ */
-
-footer {
-  text-align: center;
-  padding: 20px;
-  margin-top: 20px;
-  color: #777;
-  border-top: 1px solid #272b3a;
-}
-
-/* ============================================================
-   Scrollbar fix
-   ============================================================ */
-
-table {
-  scrollbar-width: thin;
-  scrollbar-color: #272b3a #0f111a;
-}
-
-table::-webkit-scrollbar {
-  width: 10px;
-}
-
-table::-webkit-scrollbar-track {
-  background: #0f111a; /* ← tohle odstraní hnědý pruh */
-}
-
-table::-webkit-scrollbar-thumb {
-  background: #272b3a;
-  border-radius: 6px;
 }
