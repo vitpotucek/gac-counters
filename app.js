@@ -1,5 +1,5 @@
 /* ============================================================
-   GAC COUNTERS – CLEAN STATIC VERSION (FINAL WITH SORT + TOOLTIP)
+   GAC COUNTERS – COUNTERS VIEW + ANALYTICS VIEW
    ============================================================ */
 
 /* ---------- GLOBAL STATE ---------- */
@@ -9,7 +9,7 @@ let filterEnemyOnly = false;
 let currentPage = 1;
 
 let sortColumn = null;
-let sortDirection = 1; // 1 = asc, -1 = desc
+let sortDirection = 1;
 
 const ROWS_PER_PAGE = 10;
 
@@ -25,15 +25,63 @@ const typeFilter = document.getElementById("typeFilter");
 const autocompleteList = document.getElementById("autocompleteList");
 const tooltip = document.getElementById("tooltip");
 
+const countersSection = document.getElementById("countersSection");
+const analyticsSection = document.getElementById("analyticsSection");
+
+const navCounters = document.getElementById("navCounters");
+const navAnalytics = document.getElementById("navAnalytics");
+
+const sidebar = document.getElementById("sidebar");
+const menuToggle = document.getElementById("menuToggle");
+
 /* ---------- INITIALIZATION ---------- */
 
 document.addEventListener("DOMContentLoaded", () => {
   setupCollapsible();
+  setupNav();
+  setupSidebarToggle();
   loadJSON();
   setupSortingIcons();
 });
 
-/* ---------- LOAD DATA ---------- */
+/* ============================================================
+   SIDEBAR + NAVIGATION
+   ============================================================ */
+
+function setupSidebarToggle() {
+  if (!menuToggle || !sidebar) return;
+
+  menuToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+  });
+}
+
+function setupNav() {
+  navCounters.addEventListener("click", () => {
+    navCounters.classList.add("active");
+    navAnalytics.classList.remove("active");
+
+    countersSection.classList.add("visible");
+    analyticsSection.classList.remove("visible");
+
+    sidebar.classList.remove("open");
+  });
+
+  navAnalytics.addEventListener("click", () => {
+    navAnalytics.classList.add("active");
+    navCounters.classList.remove("active");
+
+    analyticsSection.classList.add("visible");
+    countersSection.classList.remove("visible");
+
+    sidebar.classList.remove("open");
+    renderAnalytics();
+  });
+}
+
+/* ============================================================
+   LOAD DATA
+   ============================================================ */
 
 async function loadJSON() {
   const response = await fetch("data.json");
@@ -41,18 +89,23 @@ async function loadJSON() {
   currentPage = 1;
   render();
 }
-
-/* ---------- COLLAPSIBLE GL SECTION ---------- */
+/* ============================================================
+   COLLAPSIBLE GL SECTION
+   ============================================================ */
 
 function setupCollapsible() {
   const card = document.querySelector(".collapsible-card");
   const header = document.querySelector(".collapsible-header");
 
-  card.classList.remove("open");
+  if (!card || !header) return;
+
+  card.classList.add("open");
   header.addEventListener("click", () => card.classList.toggle("open"));
 }
 
-/* ---------- CALCULATIONS ---------- */
+/* ============================================================
+   HELPERS
+   ============================================================ */
 
 function calcWinrate(m) {
   return m.attempts ? Math.round((m.wins / m.attempts) * 100) : 0;
@@ -77,7 +130,29 @@ function enrichMatchups(list) {
   });
 }
 
-/* ---------- RENDER MAIN TABLE ---------- */
+function groupByEnemyLead(list) {
+  const groups = {};
+  list.forEach(m => {
+    if (!groups[m.enemyLead]) groups[m.enemyLead] = [];
+    groups[m.enemyLead].push(m);
+  });
+  return groups;
+}
+
+function safeClassName(name) {
+  return name.replace(/[^a-zA-Z0-9_-]/g, "-");
+}
+
+function colorClassForWinrate(w) {
+  if (w === 100) return "green";
+  if (w >= 80) return "blue";
+  if (w >= 50) return "yellow";
+  return "red";
+}
+
+/* ============================================================
+   RENDER MAIN TABLE (GROUPED BY ENEMY LEAD)
+   ============================================================ */
 
 function render() {
   const search = searchInput.value.toLowerCase();
@@ -99,16 +174,10 @@ function render() {
     });
   }
 
-  /* ----- SEARCH ----- */
+  /* ----- SEARCH (ONLY ENEMY LEAD) ----- */
   if (search) {
     filtered = filtered.filter(m =>
-      filterEnemyOnly
-        ? m.enemyLead.toLowerCase().includes(search)
-        : (
-            m.enemyLead.toLowerCase().includes(search) ||
-            m.myLead.toLowerCase().includes(search) ||
-            (m.notes && m.notes.toLowerCase().includes(search))
-          )
+      m.enemyLead.toLowerCase().includes(search)
     );
   }
 
@@ -120,40 +189,99 @@ function render() {
   const start = (currentPage - 1) * ROWS_PER_PAGE;
   const pageItems = filtered.slice(start, start + ROWS_PER_PAGE);
 
-  /* ----- RENDER TABLE ----- */
-  tableBody.innerHTML = pageItems
-    .map(
-      m => `
-      <tr>
-        <td>${m.type}</td>
-        <td>${m.enemyLead}</td>
-        <td>${m.myLead}</td>
-        <td>${m.winrate}%</td>
-        <td><span class="badge badge-${m.tier}">${m.tier}</span></td>
-        <td>${m.wins}/${m.attempts}</td>
+  /* ----- GROUPING ----- */
+  const groups = groupByEnemyLead(pageItems);
+
+  let html = "";
+
+  Object.keys(groups).forEach(enemy => {
+    const group = groups[enemy];
+    const bestWinrate = Math.max(...group.map(g => g.winrate));
+    const count = group.length;
+    const safe = safeClassName(enemy);
+    const colorClass = colorClassForWinrate(bestWinrate);
+
+    html += `
+      <tr class="group-header group-color-${colorClass}" data-group="${enemy}">
+        <td colspan="6">
+          <span class="group-arrow">▶</span>
+          <strong>${enemy}</strong>
+          <span class="group-info">(${count} counters, best ${bestWinrate}%)</span>
+        </td>
       </tr>
-    `
-    )
-    .join("");
+    `;
 
-  /* ----- ROW EVENTS (DETAIL + TOOLTIP) ----- */
-  tableBody.querySelectorAll("tr").forEach((tr, i) => {
-    const rowData = pageItems[i];
+    group.forEach(m => {
+      html += `
+        <tr class="group-row group-${safe}" style="display:none;">
+          <td>${m.type}</td>
+          <td>${m.enemyLead}</td>
+          <td>${m.myLead}</td>
+          <td>${m.winrate}%</td>
+          <td><span class="badge badge-${m.tier}">${m.tier}</span></td>
+          <td>${m.wins}/${m.attempts}</td>
+        </tr>
+      `;
+    });
+  });
 
-    tr.addEventListener("click", () => showDetail(rowData));
+  tableBody.innerHTML = html;
 
-    tr.addEventListener("mousemove", e => {
+  /* ----- CLICK EVENTS FOR GROUP HEADERS ----- */
+  document.querySelectorAll(".group-header").forEach(header => {
+    header.addEventListener("click", () => {
+      const enemy = header.dataset.group;
+      const safe = safeClassName(enemy);
+      const rows = document.querySelectorAll(`.group-${safe}`);
+      const arrow = header.querySelector(".group-arrow");
+
+      const isOpen = arrow.textContent === "▼";
+
+      rows.forEach(r => r.style.display = isOpen ? "none" : "table-row");
+      arrow.textContent = isOpen ? "▶" : "▼";
+    });
+  });
+
+  /* ----- AUTO-EXPAND WHEN FILTERED TO SINGLE GROUP ----- */
+  const headers = document.querySelectorAll(".group-header");
+
+  if (headers.length === 1) {
+    const header = headers[0];
+    const enemy = header.dataset.group;
+    const safe = safeClassName(enemy);
+    const rows = document.querySelectorAll(`.group-${safe}`);
+    const arrow = header.querySelector(".group-arrow");
+
+    rows.forEach(r => r.style.display = "table-row");
+    arrow.textContent = "▼";
+  }
+
+  /* ----- CLICK + TOOLTIP EVENTS FOR GROUP ROWS ----- */
+  document.querySelectorAll(".group-row").forEach(row => {
+    const enemy = row.querySelector("td:nth-child(2)").textContent;
+    const myLead = row.querySelector("td:nth-child(3)").textContent;
+
+    const rowData = filtered.find(
+      m => m.enemyLead === enemy && m.myLead === myLead
+    );
+
+    if (!rowData) return;
+
+    row.addEventListener("click", () => showDetail(rowData));
+
+    row.addEventListener("mousemove", e => {
       showTooltip(rowData, e.pageX, e.pageY);
     });
 
-    tr.addEventListener("mouseleave", hideTooltip);
+    row.addEventListener("mouseleave", hideTooltip);
   });
 
   updateSummary();
   renderPagination(filtered.length);
 }
-
-/* ---------- PAGINATION ---------- */
+/* ============================================================
+   PAGINATION
+   ============================================================ */
 
 function renderPagination(totalItems) {
   const pagination = document.getElementById("pagination");
@@ -176,7 +304,9 @@ function renderPagination(totalItems) {
   }
 }
 
-/* ---------- SUMMARY (GL COUNTERS) ---------- */
+/* ============================================================
+   SUMMARY (GL COUNTERS)
+   ============================================================ */
 
 function updateSummary() {
   const fullList = enrichMatchups(matchups);
@@ -190,7 +320,6 @@ function updateSummary() {
     "Jabba",
     "Leia Organa",
     "Lord Vader",
-    "Pirate King Hondo Ohnaka",
     "Sith Eternal Emperor"
   ];
 
@@ -207,10 +336,13 @@ function updateSummary() {
     })
     .join("");
 
-  document.getElementById("glCounters").innerHTML = glHTML;
+  const glContainer = document.getElementById("glCounters");
+  if (glContainer) glContainer.innerHTML = glHTML;
 }
 
-/* ---------- DETAIL PANEL ---------- */
+/* ============================================================
+   DETAIL PANEL
+   ============================================================ */
 
 function showDetail(m) {
   detailPanel.innerHTML = `
@@ -223,7 +355,9 @@ function showDetail(m) {
   `;
 }
 
-/* ---------- TOOLTIP ---------- */
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
 
 function showTooltip(m, x, y) {
   tooltip.innerHTML = `
@@ -242,9 +376,16 @@ function hideTooltip() {
   tooltip.style.transform = "translateY(-6px)";
 }
 
-/* ---------- FILTERING ---------- */
+/* ============================================================
+   FILTERING + GL TILE TOGGLE
+   ============================================================ */
 
 function filterForGL(glName) {
+  if (searchInput.value === glName && filterEnemyOnly) {
+    resetFilters();
+    return;
+  }
+
   filterEnemyOnly = true;
   searchInput.value = glName;
   typeFilter.value = "";
@@ -265,22 +406,28 @@ function resetFilters() {
   render();
 }
 
-/* ---------- AUTOCOMPLETE ---------- */
+/* ============================================================
+   AUTOCOMPLETE
+   ============================================================ */
 
 function updateAutocomplete() {
   const text = searchInput.value.toLowerCase();
 
-  if (!text) return (autocompleteList.style.display = "none");
+  if (!text) {
+    autocompleteList.style.display = "none";
+    return;
+  }
 
   const suggestions = [...new Set(
     matchups
-      .flatMap(m =>
-        filterEnemyOnly ? [m.enemyLead] : [m.enemyLead, m.myLead]
-      )
+      .flatMap(m => [m.enemyLead])
       .filter(name => name.toLowerCase().includes(text))
   )].slice(0, 10);
 
-  if (!suggestions.length) return (autocompleteList.style.display = "none");
+  if (!suggestions.length) {
+    autocompleteList.style.display = "none";
+    return;
+  }
 
   autocompleteList.innerHTML = suggestions
     .map(s => `<div class="autocomplete-item" data-value="${s}">${s}</div>`)
@@ -289,7 +436,9 @@ function updateAutocomplete() {
   autocompleteList.style.display = "block";
 }
 
-/* ---------- EVENT LISTENERS ---------- */
+/* ============================================================
+   EVENT LISTENERS – FILTERS, AUTOCOMPLETE
+   ============================================================ */
 
 searchInput.addEventListener("input", () => {
   filterEnemyOnly = false;
@@ -301,7 +450,7 @@ searchInput.addEventListener("input", () => {
 autocompleteList.addEventListener("click", e => {
   if (e.target.classList.contains("autocomplete-item")) {
     searchInput.value = e.target.dataset.value;
-    filterEnemyOnly = false;
+    filterEnemyOnly = true;
     currentPage = 1;
     render();
     autocompleteList.style.display = "none";
@@ -328,8 +477,9 @@ document.addEventListener("click", e => {
     autocompleteList.style.display = "none";
   }
 });
-
-/* ---------- SORTING ICONS + CLICK HANDLERS ---------- */
+/* ============================================================
+   SORTING ICONS
+   ============================================================ */
 
 function setupSortingIcons() {
   const headers = document.querySelectorAll("th");
@@ -375,4 +525,124 @@ function updateSortIcons() {
       icon.textContent = "↕";
     }
   });
+}
+
+/* ============================================================
+   ANALYTICS – MINI HEATMAP PREVIEW
+   ============================================================ */
+
+function renderAnalytics() {
+  renderHeatmapMini();
+}
+
+function renderHeatmapMini() {
+  const container = document.querySelector(".analytics-card .analytics-placeholder");
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="heatmap-mini-info">
+      Klikni pro otevření fullscreen heatmapy
+    </div>
+  `;
+
+  container.addEventListener("click", openHeatmapModal);
+}
+
+/* ============================================================
+   FULLSCREEN HEATMAP MODAL
+   ============================================================ */
+
+function openHeatmapModal() {
+  document.getElementById("heatmapModal").classList.add("open");
+  renderHeatmapFullscreen();
+}
+
+function closeHeatmapModal() {
+  document.getElementById("heatmapModal").classList.remove("open");
+}
+
+document.getElementById("closeHeatmap").addEventListener("click", closeHeatmapModal);
+
+/* ============================================================
+   FULLSCREEN HEATMAP RENDER
+   ============================================================ */
+
+function renderHeatmapFullscreen() {
+  const container = document.getElementById("heatmapModalContainer");
+  if (!container) return;
+
+  const enriched = enrichMatchups(matchups);
+
+  const enemyLeads = [...new Set(enriched.map(m => m.enemyLead))];
+  const myLeads = [...new Set(enriched.map(m => m.myLead))];
+
+  const cols = myLeads.length + 1;
+
+  const grid = document.createElement("div");
+  grid.className = "heatmap";
+  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+  // Top-left corner
+  grid.appendChild(makeHeaderCell(""));
+
+  // Column headers
+  myLeads.forEach(my => {
+    grid.appendChild(makeHeaderCell(my));
+  });
+
+  // Rows
+  enemyLeads.forEach(enemy => {
+    grid.appendChild(makeHeaderCell(enemy));
+
+    myLeads.forEach(my => {
+      const item = enriched.find(m => m.enemyLead === enemy && m.myLead === my);
+      grid.appendChild(makeHeatCell(item));
+    });
+  });
+
+  container.innerHTML = "";
+  container.appendChild(grid);
+}
+
+/* ============================================================
+   HEATMAP CELL + HEADER HELPERS
+   ============================================================ */
+
+function makeHeaderCell(text) {
+  const cell = document.createElement("div");
+  cell.className = "heatmap-header";
+  cell.textContent = text;
+  return cell;
+}
+
+function makeHeatCell(item) {
+  const cell = document.createElement("div");
+  cell.className = "heatmap-cell";
+
+  if (!item) {
+    cell.style.background = "#2a2f44";
+    cell.textContent = "-";
+    return cell;
+  }
+
+  const w = item.winrate;
+
+  const color =
+    w === 100 ? "#2ecc71" :
+    w >= 80  ? "#3498db" :
+    w >= 50  ? "#f1c40f" :
+               "#e74c3c";
+
+  cell.style.background = color;
+  cell.textContent = w + "%";
+
+  cell.addEventListener("mousemove", e => {
+    showTooltip(item, e.pageX, e.pageY);
+  });
+
+  cell.addEventListener("mouseleave", hideTooltip);
+
+  cell.addEventListener("click", () => showDetail(item));
+
+  return cell;
 }
