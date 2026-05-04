@@ -2,26 +2,27 @@
    ZÁKLADNÍ NASTAVENÍ
    ============================================================ */
 
-body {
+html, body {
+  height: 100%;          /* ← KLÍČOVÝ FIX */
+  background: #0f111a;   /* sjednocené pozadí */
   margin: 0;
   padding: 0;
+}
+
+body {
   font-family: Arial, sans-serif;
-  background: #0f111a;
   color: #e0e3eb;
 }
 
-html {
-  background: #0f111a;
-}
-
+/* Rodiče musí mít výšku, jinak absolute sekce visí ve vzduchu */
 .app-layout {
   background: #0f111a;
-  min-height: 100vh; /* FIX 1 */
+  min-height: 100vh;     /* ← FIX */
 }
 
 .main-content {
   background: #0f111a;
-  min-height: 100vh; /* FIX 2 */
+  min-height: 100vh;     /* ← FIX */
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
@@ -90,8 +91,8 @@ header {
   left: 0;
   width: 100%;
   padding-top: 30px;
-  background: #0f111a; /* sjednocené pozadí */
-  min-height: 100vh;   /* FIX 3 */
+  background: #0f111a;   /* sjednocené pozadí */
+  min-height: 100vh;     /* ← FIX */
 }
 
 /* ============================================================
