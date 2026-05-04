@@ -25,7 +25,7 @@ header {
 }
 
 /* ============================================================
-   HAMBURGER BUTTON (LEFT SIDE)
+   HAMBURGER BUTTON
    ============================================================ */
 
 .hamburger {
@@ -42,7 +42,7 @@ header {
    ============================================================ */
 
 .app-layout {
-  position: relative;
+  display: flex;
   min-height: calc(100vh - 80px);
 }
 
@@ -66,6 +66,7 @@ header {
 }
 
 .main-content {
+  flex: 1;
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
@@ -74,16 +75,31 @@ header {
 }
 
 /* ============================================================
-   LAYERED SECTIONS (fix for analytics jumping down)
+   SECTIONS – FIX (NO ABSOLUTE!)
    ============================================================ */
 
 #countersSection,
 #analyticsSection {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  padding-top: 30px; /* ← FIX: přidána mezera nahoře */
+  padding-top: 20px;
+  position: relative; /* ← FIX */
+}
+
+/* ============================================================
+   PAGE TRANSITION
+   ============================================================ */
+
+.fade-section {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+
+.fade-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 /* ============================================================
@@ -125,23 +141,6 @@ header {
   background: #3498db;
   border-color: #3498db;
   font-weight: bold;
-}
-
-/* ============================================================
-   PAGE TRANSITION ANIMATION
-   ============================================================ */
-
-.fade-section {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  pointer-events: none;
-}
-
-.fade-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
 }
 
 /* ============================================================
@@ -322,21 +321,10 @@ tr:hover {
    GROUP COLOR HIGHLIGHT
    ============================================================ */
 
-.group-color-green {
-  border-left: 6px solid #2ecc71;
-}
-
-.group-color-blue {
-  border-left: 6px solid #3498db;
-}
-
-.group-color-yellow {
-  border-left: 6px solid #f1c40f;
-}
-
-.group-color-red {
-  border-left: 6px solid #e74c3c;
-}
+.group-color-green { border-left: 6px solid #2ecc71; }
+.group-color-blue { border-left: 6px solid #3498db; }
+.group-color-yellow { border-left: 6px solid #f1c40f; }
+.group-color-red { border-left: 6px solid #e74c3c; }
 
 /* ============================================================
    BADGES
