@@ -93,7 +93,8 @@ header {
   left: 0;
   width: 100%;
   padding-top: 30px;
-  background: #0f111a; /* ← FINÁLNÍ FIX */
+  background: #0f111a; /* sjednocené pozadí */
+  min-height: 100vh;   /* FIX proti hnědému pruhu */
 }
 
 /* ============================================================
