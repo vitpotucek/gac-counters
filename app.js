@@ -383,13 +383,6 @@ function hideTooltip() {
    ============================================================ */
 
 function filterForGL(glName) {
-  // Toggle: pokud už je filtr aktivní na stejný GL → reset
-  if (searchInput.value === glName && filterEnemyOnly) {
-    resetFilters();
-    return;
-  }
-
-  // Aktivace filtru
   filterEnemyOnly = true;
   searchInput.value = glName;
   typeFilter.value = "";
