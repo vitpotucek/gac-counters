@@ -358,15 +358,18 @@ function showDetail(m) {
 }
 
 /* ============================================================
-   TOOLTIP
+   TOOLTIP — UPDATED TO SHOW NOTES
    ============================================================ */
 
 function showTooltip(m, x, y) {
+  const notes = m.notes && m.notes.trim() !== "" ? m.notes : "(no notes)";
+
   tooltip.innerHTML = `
     <strong>${m.enemyLead}</strong> vs <strong>${m.myLead}</strong><br>
-    Winrate: ${m.winrate}%<br>
-    Tier: ${m.tier}
+    <em>📝 Notes:</em><br>
+    ${notes}
   `;
+
   tooltip.style.left = x + 12 + "px";
   tooltip.style.top = y + 12 + "px";
   tooltip.style.opacity = 1;
@@ -383,13 +386,11 @@ function hideTooltip() {
    ============================================================ */
 
 function filterForGL(glName) {
-  // Toggle: pokud už je filtr aktivní na stejný GL → reset
   if (searchInput.value === glName && filterEnemyOnly) {
     resetFilters();
     return;
   }
 
-  // Aktivace filtru
   filterEnemyOnly = true;
   searchInput.value = glName;
   typeFilter.value = "";
@@ -532,18 +533,4 @@ function updateSortIcons() {
       icon.textContent = "↕";
     }
   });
-}
-
-/* ============================================================
-   ANALYTICS RENDER (PLACEHOLDER)
-   ============================================================ */
-
-function renderAnalytics() {
-  // Sem přijdou grafy:
-  // - heatmapa
-  // - tier distribution
-  // - attempts vs winrate
-  // - weak spots
-  // - top counters
-  // - faction performance
 }
