@@ -69,5 +69,5 @@
   { "type": "ship", "enemyLead": "Profundity", "myLead": "Profundity", "attempts": 1, "wins": 1, "notes": "Outrider must go" },
   { "type": "cleanup", "enemyLead": "Supreme Leader Kylo Ren", "myLead": "Commander Luke Skywalker", "attempts": 2, "wins": 2, "notes": "" },
   { "type": "cleanup", "enemyLead": "Supreme Leader Kylo Ren", "myLead": "Boss Nass", "attempts": 1, "wins": 1, "notes": "There was 4 of 5 alive - DRey alive with omicron - no problem clean" },
-  { "type": "cleanup", "enemyLead": "Negotiator", "myLead": "Executrix", "attempts": 1, "wins": 1, "notes": "" },
+  { "type": "cleanup", "enemyLead": "Negotiator", "myLead": "Executrix", "attempts": 1, "wins": 1, "notes": "" }
 ]
