@@ -89,7 +89,6 @@ async function loadJSON() {
   currentPage = 1;
   render();
 }
-
 /* ============================================================
    COLLAPSIBLE GL SECTION
    ============================================================ */
@@ -280,7 +279,6 @@ function render() {
   updateSummary();
   renderPagination(filtered.length);
 }
-
 /* ============================================================
    PAGINATION
    ============================================================ */
@@ -383,13 +381,11 @@ function hideTooltip() {
    ============================================================ */
 
 function filterForGL(glName) {
-  // Toggle: pokud už je filtr aktivní na stejný GL → reset
   if (searchInput.value === glName && filterEnemyOnly) {
     resetFilters();
     return;
   }
 
-  // Aktivace filtru
   filterEnemyOnly = true;
   searchInput.value = glName;
   typeFilter.value = "";
@@ -424,9 +420,7 @@ function updateAutocomplete() {
 
   const suggestions = [...new Set(
     matchups
-      .flatMap(m =>
-        filterEnemyOnly ? [m.enemyLead] : [m.enemyLead]
-      )
+      .flatMap(m => [m.enemyLead])
       .filter(name => name.toLowerCase().includes(text))
   )].slice(0, 10);
 
@@ -483,7 +477,6 @@ document.addEventListener("click", e => {
     autocompleteList.style.display = "none";
   }
 });
-
 /* ============================================================
    SORTING ICONS
    ============================================================ */
@@ -535,15 +528,47 @@ function updateSortIcons() {
 }
 
 /* ============================================================
-   ANALYTICS – HEATMAP
+   ANALYTICS – MINI HEATMAP PREVIEW
    ============================================================ */
 
 function renderAnalytics() {
-  renderHeatmap();
+  renderHeatmapMini();
 }
 
-function renderHeatmap() {
+function renderHeatmapMini() {
   const container = document.querySelector(".analytics-card .analytics-placeholder");
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="heatmap-mini-info">
+      Klikni pro otevření fullscreen heatmapy
+    </div>
+  `;
+
+  container.addEventListener("click", openHeatmapModal);
+}
+
+/* ============================================================
+   FULLSCREEN HEATMAP MODAL
+   ============================================================ */
+
+function openHeatmapModal() {
+  document.getElementById("heatmapModal").classList.add("open");
+  renderHeatmapFullscreen();
+}
+
+function closeHeatmapModal() {
+  document.getElementById("heatmapModal").classList.remove("open");
+}
+
+document.getElementById("closeHeatmap").addEventListener("click", closeHeatmapModal);
+
+/* ============================================================
+   FULLSCREEN HEATMAP RENDER
+   ============================================================ */
+
+function renderHeatmapFullscreen() {
+  const container = document.getElementById("heatmapModalContainer");
   if (!container) return;
 
   const enriched = enrichMatchups(matchups);
@@ -560,7 +585,7 @@ function renderHeatmap() {
   // Top-left corner
   grid.appendChild(makeHeaderCell(""));
 
-  // Column headers (my leads)
+  // Column headers
   myLeads.forEach(my => {
     grid.appendChild(makeHeaderCell(my));
   });
@@ -578,6 +603,10 @@ function renderHeatmap() {
   container.innerHTML = "";
   container.appendChild(grid);
 }
+
+/* ============================================================
+   HEATMAP CELL + HEADER HELPERS
+   ============================================================ */
 
 function makeHeaderCell(text) {
   const cell = document.createElement("div");
