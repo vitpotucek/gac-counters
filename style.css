@@ -10,6 +10,15 @@ body {
   color: #e0e3eb;
 }
 
+html {
+  background: #0f111a;
+}
+
+.app-layout,
+.main-content {
+  background: #0f111a; /* ← FIX scrollovacího problému */
+}
+
 h1, h2, h3 {
   margin: 0 0 10px;
   color: #ffffff;
@@ -83,7 +92,7 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  padding-top: 30px; /* ← FIX: přidána mezera nahoře */
+  padding-top: 30px;
 }
 
 /* ============================================================
