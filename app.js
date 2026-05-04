@@ -1,5 +1,5 @@
 /* ============================================================
-   GAC COUNTERS – COUNTERS VIEW + ANALYTICS VIEW
+   GAC COUNTERS – COUNTERS VIEW + ANALYTICS VIEW (SIDEBAR)
    ============================================================ */
 
 /* ---------- GLOBAL STATE ---------- */
@@ -89,6 +89,7 @@ async function loadJSON() {
   currentPage = 1;
   render();
 }
+
 /* ============================================================
    COLLAPSIBLE GL SECTION
    ============================================================ */
@@ -279,6 +280,7 @@ function render() {
   updateSummary();
   renderPagination(filtered.length);
 }
+
 /* ============================================================
    PAGINATION
    ============================================================ */
@@ -377,15 +379,17 @@ function hideTooltip() {
 }
 
 /* ============================================================
-   FILTERING + GL TILE TOGGLE
+   FILTERING
    ============================================================ */
 
 function filterForGL(glName) {
+  // Toggle: pokud už je filtr aktivní na stejný GL → reset
   if (searchInput.value === glName && filterEnemyOnly) {
     resetFilters();
     return;
   }
 
+  // Aktivace filtru
   filterEnemyOnly = true;
   searchInput.value = glName;
   typeFilter.value = "";
@@ -420,7 +424,9 @@ function updateAutocomplete() {
 
   const suggestions = [...new Set(
     matchups
-      .flatMap(m => [m.enemyLead])
+      .flatMap(m =>
+        filterEnemyOnly ? [m.enemyLead] : [m.enemyLead]
+      )
       .filter(name => name.toLowerCase().includes(text))
   )].slice(0, 10);
 
@@ -477,6 +483,7 @@ document.addEventListener("click", e => {
     autocompleteList.style.display = "none";
   }
 });
+
 /* ============================================================
    SORTING ICONS
    ============================================================ */
@@ -528,121 +535,15 @@ function updateSortIcons() {
 }
 
 /* ============================================================
-   ANALYTICS – MINI HEATMAP PREVIEW
+   ANALYTICS RENDER (PLACEHOLDER)
    ============================================================ */
 
 function renderAnalytics() {
-  renderHeatmapMini();
-}
-
-function renderHeatmapMini() {
-  const container = document.querySelector(".analytics-card .analytics-placeholder");
-  if (!container) return;
-
-  container.innerHTML = `
-    <div class="heatmap-mini-info">
-      Klikni pro otevření fullscreen heatmapy
-    </div>
-  `;
-
-  container.addEventListener("click", openHeatmapModal);
-}
-
-/* ============================================================
-   FULLSCREEN HEATMAP MODAL
-   ============================================================ */
-
-function openHeatmapModal() {
-  document.getElementById("heatmapModal").classList.add("open");
-  renderHeatmapFullscreen();
-}
-
-function closeHeatmapModal() {
-  document.getElementById("heatmapModal").classList.remove("open");
-}
-
-document.getElementById("closeHeatmap").addEventListener("click", closeHeatmapModal);
-
-/* ============================================================
-   FULLSCREEN HEATMAP RENDER
-   ============================================================ */
-
-function renderHeatmapFullscreen() {
-  const container = document.getElementById("heatmapModalContainer");
-  if (!container) return;
-
-  const enriched = enrichMatchups(matchups);
-
-  const enemyLeads = [...new Set(enriched.map(m => m.enemyLead))];
-  const myLeads = [...new Set(enriched.map(m => m.myLead))];
-
-  const cols = myLeads.length + 1;
-
-  const grid = document.createElement("div");
-  grid.className = "heatmap";
-  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-
-  // Top-left corner
-  grid.appendChild(makeHeaderCell(""));
-
-  // Column headers
-  myLeads.forEach(my => {
-    grid.appendChild(makeHeaderCell(my));
-  });
-
-  // Rows
-  enemyLeads.forEach(enemy => {
-    grid.appendChild(makeHeaderCell(enemy));
-
-    myLeads.forEach(my => {
-      const item = enriched.find(m => m.enemyLead === enemy && m.myLead === my);
-      grid.appendChild(makeHeatCell(item));
-    });
-  });
-
-  container.innerHTML = "";
-  container.appendChild(grid);
-}
-
-/* ============================================================
-   HEATMAP CELL + HEADER HELPERS
-   ============================================================ */
-
-function makeHeaderCell(text) {
-  const cell = document.createElement("div");
-  cell.className = "heatmap-header";
-  cell.textContent = text;
-  return cell;
-}
-
-function makeHeatCell(item) {
-  const cell = document.createElement("div");
-  cell.className = "heatmap-cell";
-
-  if (!item) {
-    cell.style.background = "#2a2f44";
-    cell.textContent = "-";
-    return cell;
-  }
-
-  const w = item.winrate;
-
-  const color =
-    w === 100 ? "#2ecc71" :
-    w >= 80  ? "#3498db" :
-    w >= 50  ? "#f1c40f" :
-               "#e74c3c";
-
-  cell.style.background = color;
-  cell.textContent = w + "%";
-
-  cell.addEventListener("mousemove", e => {
-    showTooltip(item, e.pageX, e.pageY);
-  });
-
-  cell.addEventListener("mouseleave", hideTooltip);
-
-  cell.addEventListener("click", () => showDetail(item));
-
-  return cell;
+  // Sem přijdou grafy:
+  // - heatmapa
+  // - tier distribution
+  // - attempts vs winrate
+  // - weak spots
+  // - top counters
+  // - faction performance
 }

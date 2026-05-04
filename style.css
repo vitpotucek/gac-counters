@@ -25,7 +25,7 @@ header {
 }
 
 /* ============================================================
-   HAMBURGER BUTTON
+   HAMBURGER BUTTON (LEFT SIDE)
    ============================================================ */
 
 .hamburger {
@@ -74,7 +74,7 @@ header {
 }
 
 /* ============================================================
-   LAYERED SECTIONS
+   LAYERED SECTIONS (fix for analytics jumping down)
    ============================================================ */
 
 #countersSection,
@@ -83,7 +83,7 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  padding-top: 30px;
+  padding-top: 30px; /* ← FIX: přidána mezera nahoře */
 }
 
 /* ============================================================
@@ -128,7 +128,7 @@ header {
 }
 
 /* ============================================================
-   PAGE TRANSITION
+   PAGE TRANSITION ANIMATION
    ============================================================ */
 
 .fade-section {
@@ -550,92 +550,6 @@ tr:hover {
   font-size: 13px;
   color: #b0b4c4;
   opacity: 0.9;
-  cursor: pointer;
-  text-align: center;
-  padding: 20px 0;
-}
-
-.analytics-placeholder:hover {
-  opacity: 1;
-  text-decoration: underline;
-}
-
-/* ============================================================
-   HEATMAP (GRID)
-   ============================================================ */
-
-.heatmap {
-  display: grid;
-  border: 1px solid #272b3a;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.heatmap-header {
-  background: #1d2233;
-  font-weight: bold;
-  font-size: 12px;
-  padding: 6px;
-  text-align: center;
-  border-bottom: 1px solid #272b3a;
-  border-right: 1px solid #272b3a;
-}
-
-.heatmap-cell {
-  padding: 6px;
-  text-align: center;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.heatmap-cell:hover {
-  outline: 1px solid #fff;
-  z-index: 2;
-}
-
-/* ============================================================
-   FULLSCREEN HEATMAP MODAL
-   ============================================================ */
-
-.heatmap-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.75);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  backdrop-filter: blur(4px);
-}
-
-.heatmap-modal.open {
-  display: flex;
-}
-
-.heatmap-modal-content {
-  background: #151824;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  height: 85%;
-  overflow: auto;
-  border: 1px solid #272b3a;
-  animation: fadeIn 0.25s ease;
-}
-
-.heatmap-close {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 22px;
-  float: right;
-  cursor: pointer;
-  opacity: 0.7;
-}
-
-.heatmap-close:hover {
-  opacity: 1;
 }
 
 /* ============================================================
