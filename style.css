@@ -2,32 +2,12 @@
    ZÁKLADNÍ NASTAVENÍ
    ============================================================ */
 
-html, body {
-  height: 100%;          /* ← KLÍČOVÝ FIX */
-  background: #0f111a;   /* sjednocené pozadí */
+body {
   margin: 0;
   padding: 0;
-}
-
-body {
   font-family: Arial, sans-serif;
+  background: #0f111a;
   color: #e0e3eb;
-}
-
-/* Rodiče musí mít výšku, jinak absolute sekce visí ve vzduchu */
-.app-layout {
-  background: #0f111a;
-  min-height: 100vh;     /* ← FIX */
-}
-
-.main-content {
-  background: #0f111a;
-  min-height: 100vh;     /* ← FIX */
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  box-sizing: border-box;
-  position: relative;
 }
 
 h1, h2, h3 {
@@ -45,7 +25,7 @@ header {
 }
 
 /* ============================================================
-   HAMBURGER BUTTON
+   HAMBURGER BUTTON (LEFT SIDE)
    ============================================================ */
 
 .hamburger {
@@ -58,8 +38,13 @@ header {
 }
 
 /* ============================================================
-   SIDEBAR
+   LAYOUT – SIDEBAR + MAIN
    ============================================================ */
+
+.app-layout {
+  position: relative;
+  min-height: calc(100vh - 80px);
+}
 
 .sidebar {
   width: 220px;
@@ -80,8 +65,16 @@ header {
   transform: translateX(0);
 }
 
+.main-content {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  position: relative;
+}
+
 /* ============================================================
-   LAYERED SECTIONS (ABSOLUTE)
+   LAYERED SECTIONS (fix for analytics jumping down)
    ============================================================ */
 
 #countersSection,
@@ -90,9 +83,7 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  padding-top: 30px;
-  background: #0f111a;   /* sjednocené pozadí */
-  min-height: 100vh;     /* ← FIX */
+  padding-top: 30px; /* ← FIX: přidána mezera nahoře */
 }
 
 /* ============================================================
@@ -137,7 +128,7 @@ header {
 }
 
 /* ============================================================
-   PAGE TRANSITION
+   PAGE TRANSITION ANIMATION
    ============================================================ */
 
 .fade-section {
