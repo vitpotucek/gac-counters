@@ -2,118 +2,140 @@
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
-  <title>GAC Counters – Vítova appka</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vito's GAC counters DB</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <header>
-    <h1>GAC Counters – osobní databáze</h1>
-    <div class="controls">
-      <label>
-        Hledat:
-        <input type="text" id="searchInput" placeholder="Enemy, My lead, GL, frakce..." />
-      </label>
-      <label>
-        Tier:
-        <select id="tierFilter">
-          <option value="">Vše</option>
-          <option value="S">S</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-        </select>
-      </label>
-      <label>
-        Typ:
-        <select id="typeFilter">
-          <option value="">Vše</option>
-          <option value="ground">Ground</option>
-          <option value="ship">Ship</option>
-          <option value="cleanup">Cleanup</option>
-        </select>
-      </label>
-    </div>
+    <button id="menuToggle" class="hamburger">☰</button>
+    <h1>Vito's GAC counters DB</h1>
   </header>
 
-  <main>
-    <section class="summary">
-      <div class="card">
-        <h2>Souhrn</h2>
-        <p><strong>Počet matchupů:</strong> <span id="totalMatchups">0</span></p>
-        <p><strong>Průměrná winrate:</strong> <span id="avgWinrate">0%</span></p>
-        <p><strong>S‑tier counterů:</strong> <span id="sTierCount">0</span></p>
-      </div>
-      <div class="card">
-        <h2>Doporučení</h2>
-        <ul id="recommendations"></ul>
-      </div>
-    </section>
+  <div class="app-layout">
 
-    <section class="table-section">
-      <h2>Matchupy</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Typ</th>
-            <th>Enemy lead</th>
-            <th>My lead</th>
-            <th>Winrate</th>
-            <th>Tier</th>
-            <th>Pokusy</th>
-          </tr>
-        </thead>
-        <tbody id="matchupTableBody">
-        </tbody>
-      </table>
-    </section>
+    <!-- SIDEBAR (overlay, default collapsed) -->
+    <aside id="sidebar" class="sidebar collapsed">
+      <nav class="sidebar-nav">
+        <div class="sidebar-title">Menu</div>
+        <button id="navCounters" class="nav-btn active">Counters</button>
+        <button id="navAnalytics" class="nav-btn">Analytics</button>
+      </nav>
+    </aside>
 
-    <section class="detail-section">
-      <h2>Detail counteru</h2>
-      <div id="detailPanel">
-        <p>Vyber řádek v tabulce pro detail.</p>
-      </div>
-    </section>
-<section class="edit-section">
-  <h2>Přidat nový counter</h2>
-  <form id="addForm">
-    <label>
-      Typ:
-      <select id="newType">
-        <option value="ground">ground</option>
-        <option value="ship">ship</option>
-        <option value="cleanup">cleanup</option>
-      </select>
-    </label>
-    <label>
-      Enemy lead:
-      <input type="text" id="newEnemy" required />
-    </label>
-    <label>
-      My lead:
-      <input type="text" id="newMine" required />
-    </label>
-    <label>
-      Pokusy:
-      <input type="number" id="newAttempts" min="1" value="1" required />
-    </label>
-    <label>
-      Výhry:
-      <input type="number" id="newWins" min="0" value="1" required />
-    </label>
-    <label>
-      Poznámky:
-      <input type="text" id="newNotes" />
-    </label>
-    <button type="submit">Přidat</button>
-    <button type="button" id="exportBtn">Export JSON</button>
-  </form>
-</section>
+    <main class="main-content">
 
-  </main>
+      <!-- COUNTERS SECTION -->
+      <section id="countersSection" class="fade-section visible">
+
+        <div class="controls">
+
+          <div class="search-wrapper">
+            <label for="searchInput">Search:</label>
+            <input type="text" id="searchInput" placeholder="Enemy lead..." />
+            <span id="resetFilterBtn" class="reset-icon" title="Reset filtru">⟲</span>
+
+            <div id="autocompleteList" class="autocomplete-list"></div>
+          </div>
+
+          <label>
+            Tier:
+            <select id="tierFilter">
+              <option value="">All</option>
+              <option value="S">S</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+            </select>
+          </label>
+
+          <label>
+            Typ:
+            <select id="typeFilter">
+              <option value="">All</option>
+              <option value="ground">Ground</option>
+              <option value="ship">Ship</option>
+              <option value="cleanup">Cleanup</option>
+            </select>
+          </label>
+
+        </div>
+
+        <section class="summary">
+          <div class="card collapsible-card open">
+            <h2 class="collapsible-header">
+              GL counters
+              <span class="collapse-icon">▶</span>
+            </h2>
+
+            <div class="collapsible-content">
+              <div id="glCounters" class="gl-grid"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="table-section">
+          <h2>Matchups</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Enemy lead</th>
+                <th>My lead</th>
+                <th>Winrate</th>
+                <th>Tier</th>
+                <th>Attempts</th>
+              </tr>
+            </thead>
+            <tbody id="matchupTableBody"></tbody>
+          </table>
+
+          <div id="pagination" class="pagination"></div>
+        </section>
+
+        <section class="detail-section">
+          <h2>Counter detail</h2>
+          <div id="detailPanel">
+            <p>Choose a counter for detail</p>
+          </div>
+        </section>
+
+      </section>
+
+      <!-- ANALYTICS SECTION -->
+      <section id="analyticsSection" class="analytics-section fade-section">
+        <h2>Analytics dashboard</h2>
+
+        <div class="analytics-grid">
+
+          <div class="card analytics-card">
+            <h3>Heatmap</h3>
+            <div class="analytics-placeholder">Heatmap placeholder</div>
+          </div>
+
+          <div class="card analytics-card">
+            <h3>Tier distribution</h3>
+            <div class="analytics-placeholder">Pie chart placeholder</div>
+          </div>
+
+          <div class="card analytics-card">
+            <h3>Attempts vs Winrate</h3>
+            <div class="analytics-placeholder">Scatter plot placeholder</div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
 
   <footer>
-    <small>Vítova GAC appka • data z osobního Excelu</small>
+    <small>Vito's GAC counters DB</small>
   </footer>
+
+  <div id="tooltip" class="tooltip"></div>
 
   <script src="app.js"></script>
 </body>
