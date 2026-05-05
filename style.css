@@ -1,5 +1,5 @@
 /* ============================================================
-   ZÁKLADNÍ NASTAVENÍ
+   BASE
    ============================================================ */
 
 body {
@@ -11,9 +11,14 @@ body {
 }
 
 h1, h2, h3 {
-  margin: 0 0 10px;
+  margin: 0;
   color: #ffffff;
+  line-height: 1.2;
 }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
 
 header {
   background: #151824;
@@ -22,6 +27,13 @@ header {
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+header h1 {
+  margin: 0;
+  line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
 /* ============================================================
@@ -34,11 +46,13 @@ header {
   border: none;
   color: #fff;
   cursor: pointer;
-  display: block;
+  display: flex;
+  align-items: center;
+  line-height: 1;
 }
 
 /* ============================================================
-   LAYOUT – SIDEBAR + MAIN
+   LAYOUT
    ============================================================ */
 
 .app-layout {
@@ -75,7 +89,7 @@ header {
 }
 
 /* ============================================================
-   SECTIONS – FIX (NO ABSOLUTE!)
+   SECTIONS
    ============================================================ */
 
 .fade-section {
@@ -345,19 +359,6 @@ tr:hover {
 .badge-C { background: #e74c3c; }
 
 /* ============================================================
-   DETAIL PANEL
-   ============================================================ */
-
-.detail-section {
-  margin-top: 30px;
-  background: #151824;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #272b3a;
-  animation: fadeIn 0.25s ease;
-}
-
-/* ============================================================
    PAGINATION
    ============================================================ */
 
@@ -450,7 +451,7 @@ tr:hover {
 }
 
 /* ============================================================
-   GL TILE
+   GL GRID
    ============================================================ */
 
 .gl-grid {
@@ -499,7 +500,7 @@ tr:hover {
 }
 
 /* ============================================================
-   GL OBRÁZKY
+   GL IMAGES
    ============================================================ */
 
 .gl-Ahsoka-Tano { background-image: url("img/gl/ahsoka.jpg"); }
@@ -513,32 +514,7 @@ tr:hover {
 .gl-Sith-Eternal-Emperor { background-image: url("img/gl/see.jpg"); }
 
 /* ============================================================
-   ANALYTICS SECTION
-   ============================================================ */
-
-.analytics-section {
-  animation: fadeIn 0.25s ease;
-}
-
-.analytics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.analytics-card {
-  min-height: 160px;
-}
-
-.analytics-placeholder {
-  font-size: 13px;
-  color: #b0b4c4;
-  opacity: 0.9;
-}
-
-/* ============================================================
-   MY TEAMS SECTION
+   MY TEAMS
    ============================================================ */
 
 .teams-grid {
@@ -552,19 +528,21 @@ tr:hover {
   background: #151824;
   border: 1px solid #272b3a;
   border-radius: 8px;
-  padding: 10px;
+  padding: 16px 20px;
   cursor: pointer;
   transition: transform 0.2s ease;
+  text-align: center;
 }
 
 .team-card:hover {
   transform: translateY(-4px);
 }
 
-.team-card img {
-  width: 100%;
-  border-radius: 6px;
-  margin-top: 8px;
+.team-card h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #e0e3eb;
 }
 
 .team-overlay {
@@ -601,8 +579,6 @@ tr:hover {
   opacity: 1;
 }
 
-
-
 /* ============================================================
    TOOLTIP
    ============================================================ */
@@ -620,8 +596,6 @@ tr:hover {
   transform: translateY(-6px);
   transition: opacity 0.15s ease, transform 0.15s ease;
   z-index: 999;
-
-  /* KLÍČOVÉ FIXY */
   display: block;
   width: auto;
   max-width: none;
@@ -629,16 +603,15 @@ tr:hover {
 }
 
 .tooltip img {
-  display: block;      /* ← nejdůležitější */
-  width: 600px;        /* ← 4× větší */
+  display: block;
+  width: 600px;
   height: auto;
   margin-top: 12px;
   border-radius: 6px;
 }
 
-
 /* ============================================================
-   ANIMACE
+   ANIMATIONS
    ============================================================ */
 
 @keyframes fadeIn {
