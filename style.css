@@ -619,19 +619,21 @@ tr:hover {
   transform: translateY(-6px);
   transition: opacity 0.15s ease, transform 0.15s ease;
   z-index: 999;
-  max-width: none;        /* ← DŮLEŽITÉ */
-  width: auto;            /* ← DŮLEŽITÉ */
-  display: inline-block;  /* ← DŮLEŽITÉ */
+
+  /* KLÍČOVÉ FIXY */
+  display: block;
+  width: auto;
+  max-width: none;
+  white-space: normal;
 }
 
 .tooltip img {
-  display: block;         /* ← DŮLEŽITÉ */
-  width: 500px;           /* ← 4× větší */
+  display: block;      /* ← nejdůležitější */
+  width: 600px;        /* ← 4× větší */
   height: auto;
+  margin-top: 12px;
   border-radius: 6px;
-  margin-top: 10px;
 }
-
 
 
 /* ============================================================
