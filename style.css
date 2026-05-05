@@ -78,28 +78,24 @@ header {
    SECTIONS – FIX (NO ABSOLUTE!)
    ============================================================ */
 
+.fade-section {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.fade-section.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
 #countersSection,
 #analyticsSection {
   width: 100%;
   padding-top: 20px;
-  position: relative; /* ← FIX */
-}
-
-/* ============================================================
-   PAGE TRANSITION
-   ============================================================ */
-
-.fade-section {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  pointer-events: none;
-}
-
-.fade-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+  position: relative;
 }
 
 /* ============================================================
