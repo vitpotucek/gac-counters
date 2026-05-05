@@ -1,5 +1,5 @@
 /* ============================================================
-   GAC COUNTERS – COUNTERS VIEW + ANALYTICS VIEW (SIDEBAR)
+   GAC COUNTERS – COUNTERS VIEW + ANALYTICS VIEW + MY TEAMS
    ============================================================ */
 
 /* ---------- GLOBAL STATE ---------- */
@@ -27,9 +27,11 @@ const tooltip = document.getElementById("tooltip");
 
 const countersSection = document.getElementById("countersSection");
 const analyticsSection = document.getElementById("analyticsSection");
+const myTeamsSection = document.getElementById("myTeamsSection");
 
 const navCounters = document.getElementById("navCounters");
 const navAnalytics = document.getElementById("navAnalytics");
+const navMyTeams = document.getElementById("navMyTeams");
 
 const sidebar = document.getElementById("sidebar");
 const menuToggle = document.getElementById("menuToggle");
@@ -60,9 +62,11 @@ function setupNav() {
   navCounters.addEventListener("click", () => {
     navCounters.classList.add("active");
     navAnalytics.classList.remove("active");
+    navMyTeams.classList.remove("active");
 
     countersSection.classList.add("visible");
     analyticsSection.classList.remove("visible");
+    myTeamsSection.classList.remove("visible");
 
     sidebar.classList.remove("open");
   });
@@ -70,12 +74,27 @@ function setupNav() {
   navAnalytics.addEventListener("click", () => {
     navAnalytics.classList.add("active");
     navCounters.classList.remove("active");
+    navMyTeams.classList.remove("active");
 
     analyticsSection.classList.add("visible");
     countersSection.classList.remove("visible");
+    myTeamsSection.classList.remove("visible");
 
     sidebar.classList.remove("open");
     renderAnalytics();
+  });
+
+  navMyTeams.addEventListener("click", () => {
+    navMyTeams.classList.add("active");
+    navCounters.classList.remove("active");
+    navAnalytics.classList.remove("active");
+
+    myTeamsSection.classList.add("visible");
+    countersSection.classList.remove("visible");
+    analyticsSection.classList.remove("visible");
+
+    sidebar.classList.remove("open");
+    renderMyTeams();
   });
 }
 
@@ -152,6 +171,14 @@ function colorClassForWinrate(w) {
 }
 
 /* ============================================================
+   TEAM IMAGE HELPER
+   ============================================================ */
+
+function teamImageFor(lead) {
+  const slug = lead.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  return `img/teams/${slug}.png`;
+}
+/* ============================================================
    RENDER MAIN TABLE (GROUPED BY ENEMY LEAD)
    ============================================================ */
 
@@ -217,7 +244,7 @@ function render() {
         <tr class="group-row group-${safe}" style="display:none;">
           <td>${m.type}</td>
           <td>${m.enemyLead}</td>
-          <td>${m.myLead}</td>
+          <td class="my-lead-cell" data-mylead="${m.myLead}">${m.myLead}</td>
           <td>${m.winrate}%</td>
           <td><span class="badge badge-${m.tier}">${m.tier}</span></td>
           <td>${m.wins}/${m.attempts}</td>
@@ -358,15 +385,17 @@ function showDetail(m) {
 }
 
 /* ============================================================
-   TOOLTIP — UPDATED TO SHOW NOTES
+   TOOLTIP — UPDATED TO SHOW TEAM IMAGE
    ============================================================ */
 
 function showTooltip(m, x, y) {
   const notes = m.notes && m.notes.trim() !== "" ? m.notes : "(no notes)";
+  const img = teamImageFor(m.myLead);
 
   tooltip.innerHTML = `
     <strong>${m.enemyLead}</strong> vs <strong>${m.myLead}</strong><br>
-    <em>📝 Notes:</em><br>
+    <img src="${img}" style="width:180px; border-radius:6px; margin-top:6px;"><br>
+    <em>Notes:</em><br>
     ${notes}
   `;
 
@@ -380,7 +409,6 @@ function hideTooltip() {
   tooltip.style.opacity = 0;
   tooltip.style.transform = "translateY(-6px)";
 }
-
 /* ============================================================
    FILTERING
    ============================================================ */
@@ -533,4 +561,67 @@ function updateSortIcons() {
       icon.textContent = "↕";
     }
   });
+}
+/* ============================================================
+   MY TEAMS SECTION
+   ============================================================ */
+
+function renderMyTeams() {
+  const grid = document.getElementById("myTeamsGrid");
+  if (!grid) return;
+
+  const fullList = enrichMatchups(matchups);
+
+  // unikátní My Lead postavy
+  const myLeads = [...new Set(
+    fullList
+      .map(m => m.myLead)
+      .filter(Boolean)
+  )].sort();
+
+  const html = myLeads.map(lead => {
+    const img = teamImageFor(lead);
+    const safeLead = lead.replace(/'/g, "\\'");
+    return `
+      <div class="team-card" onclick="openTeam('${safeLead}')">
+        <h3>${lead}</h3>
+        <img src="${img}" alt="${lead} team">
+      </div>
+    `;
+  }).join("");
+
+  grid.innerHTML = html;
+}
+
+function openTeam(lead) {
+  // přepnout na Counters sekci
+  navCounters.classList.add("active");
+  navAnalytics.classList.remove("active");
+  navMyTeams.classList.remove("active");
+
+  countersSection.classList.add("visible");
+  analyticsSection.classList.remove("visible");
+  myTeamsSection.classList.remove("visible");
+
+  // nastavit filtry
+  searchInput.value = lead;
+  filterEnemyOnly = false;
+  tierFilter.value = "";
+  typeFilter.value = "";
+  currentPage = 1;
+
+  render();
+
+  // scroll na tabulku
+  try {
+    document.querySelector(".table-section").scrollIntoView({ behavior: "smooth" });
+  } catch {}
+}
+
+/* ============================================================
+   ANALYTICS PLACEHOLDER (aby nenastala chyba)
+   ============================================================ */
+
+function renderAnalytics() {
+  // zatím prázdné — přidáme později
 }
