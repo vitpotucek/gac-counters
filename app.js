@@ -175,9 +175,11 @@ function colorClassForWinrate(w) {
    ============================================================ */
 
 function teamImageFor(lead) {
-  const slug = lead.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  let slug = lead.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  slug = slug.replace(/^-+|-+$/g, ""); // odstraní pomlčky na začátku i na konci
   return `img/teams/${slug}.png`;
 }
+
 /* ============================================================
    RENDER MAIN TABLE (GROUPED BY ENEMY LEAD)
    ============================================================ */
