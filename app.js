@@ -587,7 +587,6 @@ function renderMyTeams() {
     return `
       <div class="team-card" onclick="openTeam('${safeLead}')">
         <h3>${lead}</h3>
-        <img src="${img}" alt="${lead} team">
       </div>
     `;
   }).join("");
