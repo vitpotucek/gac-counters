@@ -609,7 +609,7 @@ tr:hover {
 .tooltip {
   position: absolute;
   background: #1d2233;
-  padding: 12px 16px;
+  padding: 16px 20px;
   border-radius: 8px;
   border: 1px solid #2c3145;
   color: #fff;
@@ -619,17 +619,17 @@ tr:hover {
   transform: translateY(-6px);
   transition: opacity 0.15s ease, transform 0.15s ease;
   z-index: 999;
-  max-width: 340px;
-}
-
-.tooltip {
-  max-width: 520px; /* zvětšený tooltip */
+  max-width: none;        /* ← DŮLEŽITÉ */
+  width: auto;            /* ← DŮLEŽITÉ */
+  display: inline-block;  /* ← DŮLEŽITÉ */
 }
 
 .tooltip img {
-  width: 480px;     /* ~4× větší než původní */
+  display: block;         /* ← DŮLEŽITÉ */
+  width: 500px;           /* ← 4× větší */
+  height: auto;
   border-radius: 6px;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 
