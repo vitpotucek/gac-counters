@@ -594,29 +594,28 @@ function renderMyTeams() {
 }
 
 function openTeam(lead) {
-  // přepnout na Counters sekci
-  navCounters.classList.add("active");
-  navAnalytics.classList.remove("active");
-  navMyTeams.classList.remove("active");
+  const img = teamImageFor(lead);
 
-  countersSection.classList.add("visible");
-  analyticsSection.classList.remove("visible");
-  myTeamsSection.classList.remove("visible");
+  const overlay = document.getElementById("teamOverlay");
+  const overlayImg = document.getElementById("teamOverlayImg");
+  const closeBtn = document.querySelector(".team-overlay-close");
 
-  // nastavit filtry
-  searchInput.value = lead;
-  filterEnemyOnly = false;
-  tierFilter.value = "";
-  typeFilter.value = "";
-  currentPage = 1;
+  overlayImg.src = img;
+  overlay.style.display = "flex";
 
-  render();
+  // zavření kliknutím na X
+  closeBtn.onclick = () => {
+    overlay.style.display = "none";
+  };
 
-  // scroll na tabulku
-  try {
-    document.querySelector(".table-section").scrollIntoView({ behavior: "smooth" });
-  } catch {}
+  // zavření kliknutím mimo obrázek
+  overlay.onclick = (e) => {
+    if (e.target === overlay) {
+      overlay.style.display = "none";
+    }
+  };
 }
+
 
 /* ============================================================
    ANALYTICS PLACEHOLDER (aby nenastala chyba)
