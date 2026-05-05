@@ -622,11 +622,16 @@ tr:hover {
   max-width: 340px;
 }
 
+.tooltip {
+  max-width: 520px; /* zvětšený tooltip */
+}
+
 .tooltip img {
-  width: 280px;
+  width: 480px;     /* ~4× větší než původní */
   border-radius: 6px;
   margin-top: 8px;
 }
+
 
 
 /* ============================================================
