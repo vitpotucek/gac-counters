@@ -16,7 +16,7 @@
   { "type": "ground", "enemyLead": "Darth Malgus", "myLead": "Commander Luke Skywalker", "attempts": 1, "wins": 0, "notes": "not even a slight chance" },
   { "type": "ground", "enemyLead": "Darth Revan", "myLead": "Great Mothers", "attempts": 1, "wins": 0, "notes": "" },
   { "type": "ground", "enemyLead": "Darth Revan", "myLead": "Commander Luke Skywalker", "attempts": 1, "wins": 0, "notes": "" },
-  { "type": "ground", "enemyLead": "Darth Traya", "myLead": "Bane", "attempts": 1, "wins": 1, "notes": "" },
+  { "type": "ground", "enemyLead": "Darth Traya", "myLead": "Darth Bane", "attempts": 1, "wins": 1, "notes": "" },
   { "type": "ground", "enemyLead": "Darth Traya", "myLead": "Bo-Katan (Mandalore)", "attempts": 1, "wins": 0, "notes": "" },
   { "type": "ground", "enemyLead": "Darth Traya", "myLead": "Palpatine (SK)", "attempts": 1, "wins": 1, "notes": "" },
   { "type": "ground", "enemyLead": "Dash Rendar", "myLead": "Bossk", "attempts": 1, "wins": 0, "notes": "" },
