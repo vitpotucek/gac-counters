@@ -396,7 +396,7 @@ function showTooltip(m, x, y) {
 
   tooltip.innerHTML = `
     <strong>${m.enemyLead}</strong> vs <strong>${m.myLead}</strong><br>
-    <img src="${img}" style="width:180px; border-radius:6px; margin-top:6px;"><br>
+    <img src="${img}" style="width:420px; border-radius:6px; margin-top:6px;"><br>
     <em>Notes:</em><br>
     ${notes}
   `;
