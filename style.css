@@ -574,17 +574,25 @@ tr:hover {
 .tooltip {
   position: absolute;
   background: #1d2233;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 12px 16px;
+  border-radius: 8px;
   border: 1px solid #2c3145;
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   pointer-events: none;
   opacity: 0;
   transform: translateY(-6px);
   transition: opacity 0.15s ease, transform 0.15s ease;
   z-index: 999;
+  max-width: 340px;
 }
+
+.tooltip img {
+  width: 280px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
 
 /* ============================================================
    ANIMACE
