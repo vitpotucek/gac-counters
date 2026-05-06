@@ -515,6 +515,30 @@ document.addEventListener("click", e => {
   }
 });
 
+document.addEventListener("mousemove", (e) => {
+  const tooltip = document.querySelector(".tooltip");
+  if (!tooltip || tooltip.style.opacity === "0") return;
+
+  const margin = 20;
+  const tooltipHeight = tooltip.offsetHeight;
+
+  // Výchozí pozice: nad kurzorem
+  let top = e.clientY - tooltipHeight - margin;
+
+  // Pokud by tooltip přesáhl nahoru → přilepíme ho k top: 20px
+  if (top < margin) {
+    top = margin;
+  }
+
+  // Pokud by tooltip přesáhl dolů → posuneme ho nahoru
+  const bottomLimit = window.innerHeight - tooltipHeight - margin;
+  if (top > bottomLimit) {
+    top = bottomLimit;
+  }
+
+  tooltip.style.top = top + "px";
+});
+
 /* ============================================================
    SORTING ICONS
    ============================================================ */
