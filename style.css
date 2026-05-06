@@ -583,8 +583,16 @@ tr:hover {
    TOOLTIP
    ============================================================ */
 
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+
 .tooltip {
-  position: absolute;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  
   background: #1d2233;
   padding: 16px 20px;
   border-radius: 8px;
@@ -593,9 +601,9 @@ tr:hover {
   font-size: 14px;
   pointer-events: none;
   opacity: 0;
-  transform: translateY(-6px);
   transition: opacity 0.15s ease, transform 0.15s ease;
   z-index: 999;
+
   display: block;
   width: auto;
   max-width: none;
@@ -609,6 +617,7 @@ tr:hover {
   margin-top: 12px;
   border-radius: 6px;
 }
+
 
 /* ============================================================
    ANIMATIONS
